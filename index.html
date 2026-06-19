@@ -2287,17 +2287,25 @@ window.applyFilters = applyFilters;
 <script>
   // ─── Force video mute — definitivo ───
   (function() {
-    function muteAllVideos() {
+    function forceMute(v) {
+      if (v.muted !== true) v.muted = true;
+      if (v.volume !== 0)   v.volume = 0;
+    }
+    function setup() {
       document.querySelectorAll('video').forEach(function(v) {
-        v.muted = true;
-        v.volume = 0;
         v.removeAttribute('autoplay');
+        forceMute(v);
+        if (!v.dataset.alwaysMuted) {
+          v.dataset.alwaysMuted = '1';
+          // Sempre que tentarem mexer no som (clique, slider, teclado), volta a mutar
+          v.addEventListener('volumechange', function() { forceMute(v); });
+        }
       });
     }
-    muteAllVideos();
-    document.addEventListener('DOMContentLoaded', muteAllVideos);
-    // Re-apply on any interaction just in case
-    document.addEventListener('click', muteAllVideos, true);
+    setup();
+    document.addEventListener('DOMContentLoaded', setup);
+    window.addEventListener('load', setup);
+    document.addEventListener('click', setup, true);
   })();
 
   // ─── Scroll reveal ───
