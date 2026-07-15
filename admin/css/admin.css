@@ -1,0 +1,179 @@
+/* Painel administrativo Nutra — mesma identidade visual do site */
+:root {
+  --verde: #2D5425;
+  --verde-med: #3D7033;
+  --verde-claro: #7AA86A;
+  --bege: #F4EFE4;
+  --bege-med: #EDE5D4;
+  --bege-esc: #D9CEBC;
+  --terra: #B85C2A;
+  --terra-cl: #D4834F;
+  --branco: #FDFAF5;
+  --texto: #1E2D1A;
+  --texto-med: #4A5E43;
+  --texto-cl: #7A8F73;
+  --wa: #25D366;
+  --erro: #C0392B;
+  --sombra: 0 6px 24px rgba(45, 84, 37, .12);
+  --raio: 14px;
+}
+
+* , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bege);
+  color: var(--texto);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+h1, h2, h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; color: var(--verde); }
+a { color: var(--verde-med); }
+button { font-family: inherit; cursor: pointer; }
+img { max-width: 100%; display: block; }
+
+/* ── Botões ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: none; border-radius: 50px; padding: 11px 20px;
+  font-size: .9rem; font-weight: 500; transition: transform .12s, background .2s, opacity .2s;
+  text-decoration: none; white-space: nowrap;
+}
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--verde); color: #fff; }
+.btn-primary:hover { background: var(--verde-med); }
+.btn-terra { background: var(--terra); color: #fff; }
+.btn-terra:hover { background: var(--terra-cl); }
+.btn-ghost { background: transparent; color: var(--texto-med); border: 1px solid var(--bege-esc); }
+.btn-ghost:hover { background: var(--bege-med); }
+.btn-danger { background: transparent; color: var(--erro); border: 1px solid #e6c3bd; }
+.btn-danger:hover { background: #fbeae7; }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn-sm { padding: 7px 12px; font-size: .82rem; }
+
+/* ── Login ── */
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.login-card {
+  width: 100%; max-width: 400px; background: var(--branco);
+  border-radius: var(--raio); box-shadow: var(--sombra); padding: 40px 32px;
+}
+.login-logo { text-align: center; margin-bottom: 24px; }
+.login-logo img { height: 48px; margin: 0 auto 10px; }
+.login-logo p { color: var(--texto-cl); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; }
+.login-card h1 { font-size: 1.7rem; text-align: center; margin-bottom: 6px; }
+.login-card .sub { text-align: center; color: var(--texto-cl); font-size: .88rem; margin-bottom: 26px; }
+
+/* ── Campos ── */
+.campo { margin-bottom: 16px; }
+.campo label { display: block; font-size: .82rem; font-weight: 500; color: var(--texto-med); margin-bottom: 6px; }
+.campo input, .campo select, .campo textarea {
+  width: 100%; padding: 11px 14px; border: 1px solid var(--bege-esc); border-radius: 10px;
+  background: var(--branco); font-family: inherit; font-size: .92rem; color: var(--texto);
+  transition: border-color .2s, box-shadow .2s;
+}
+.campo input:focus, .campo select:focus, .campo textarea:focus {
+  outline: none; border-color: var(--verde-claro); box-shadow: 0 0 0 3px rgba(122, 168, 106, .18);
+}
+.campo-linha { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.campo .dica { font-size: .74rem; color: var(--texto-cl); margin-top: 4px; }
+
+.alerta { border-radius: 10px; padding: 11px 14px; font-size: .85rem; margin-bottom: 16px; display: none; }
+.alerta.erro { background: #fbeae7; color: var(--erro); border: 1px solid #e6c3bd; }
+.alerta.ok { background: #e8f3e4; color: var(--verde-med); border: 1px solid #c5e0bb; }
+.alerta.show { display: block; }
+
+/* ── Layout do dashboard ── */
+.topbar {
+  position: sticky; top: 0; z-index: 30; background: var(--verde); color: #fff;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 20px;
+}
+.topbar .marca { display: flex; align-items: center; gap: 10px; }
+.topbar .marca img { height: 30px; }
+.topbar .marca strong { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 600; }
+.topbar .user { display: flex; align-items: center; gap: 12px; font-size: .85rem; }
+.topbar .user .nome { opacity: .85; }
+.topbar .btn-logout { background: rgba(255,255,255,.14); color: #fff; border: none; border-radius: 50px; padding: 7px 14px; font-size: .82rem; }
+.topbar .btn-logout:hover { background: rgba(255,255,255,.24); }
+
+.container { max-width: 1080px; margin: 0 auto; padding: 22px 20px 80px; }
+
+.tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--bege-esc); }
+.tab { background: none; border: none; padding: 12px 16px; font-size: .92rem; color: var(--texto-cl); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tab.ativo { color: var(--verde); border-bottom-color: var(--verde); font-weight: 600; }
+
+.painel { display: none; }
+.painel.ativo { display: block; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
+.toolbar .busca { flex: 1 1 200px; }
+.toolbar select, .toolbar input { padding: 9px 12px; border: 1px solid var(--bege-esc); border-radius: 10px; background: var(--branco); font-family: inherit; font-size: .88rem; }
+.toolbar .spacer { flex: 1; }
+
+/* ── Tabela (desktop) ── */
+.tabela-wrap { background: var(--branco); border-radius: var(--raio); box-shadow: var(--sombra); overflow: hidden; }
+table.grid { width: 100%; border-collapse: collapse; }
+table.grid th, table.grid td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--bege-med); font-size: .88rem; vertical-align: middle; }
+table.grid th { background: var(--bege-med); color: var(--texto-med); font-weight: 600; font-size: .76rem; letter-spacing: .04em; text-transform: uppercase; }
+table.grid tr:last-child td { border-bottom: none; }
+table.grid .col-img { width: 52px; }
+.thumb { width: 40px; height: 40px; border-radius: 8px; background: var(--bege-med); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; overflow: hidden; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+.acoes { display: flex; gap: 6px; justify-content: flex-end; }
+
+.badge { display: inline-block; padding: 3px 10px; border-radius: 50px; font-size: .72rem; font-weight: 600; }
+.badge.ativo { background: #e8f3e4; color: var(--verde-med); }
+.badge.inativo { background: var(--bege-esc); color: var(--texto-cl); }
+.badge.indispon { background: #f3e4d8; color: var(--terra); }
+
+.vazio { text-align: center; color: var(--texto-cl); padding: 40px; font-size: .9rem; }
+.carregando { text-align: center; color: var(--texto-cl); padding: 40px; }
+
+.card-lista { display: none; }
+
+/* ── Modal ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(30,45,26,.5); z-index: 100; display: none; align-items: flex-start; justify-content: center; padding: 24px 16px; overflow-y: auto; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--branco); border-radius: var(--raio); width: 100%; max-width: 540px; box-shadow: 0 16px 48px rgba(0,0,0,.25); margin: auto; }
+.modal-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--bege-med); }
+.modal-head h2 { font-size: 1.4rem; }
+.modal-close { background: none; border: none; font-size: 1.6rem; line-height: 1; color: var(--texto-med); width: 34px; height: 34px; border-radius: 50%; }
+.modal-close:hover { background: var(--bege-med); }
+.modal-body { padding: 22px; }
+.modal-foot { display: flex; gap: 10px; justify-content: flex-end; padding: 16px 22px; border-top: 1px solid var(--bege-med); }
+
+/* Especificidade com "label.switch" para vencer ".campo label { display:block }" */
+.switch, label.switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 0; }
+.switch span:last-child { font-size: .9rem; color: var(--texto); }
+/* Checkbox blindado contra ".campo input" (width/padding/border) */
+.switch input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; margin: 0; padding: 0; border: 0; pointer-events: none; }
+.switch .track { display: inline-block; width: 44px; height: 24px; background: var(--bege-esc); border-radius: 50px; position: relative; transition: background .2s; flex-shrink: 0; }
+.switch .track::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: transform .2s; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+.switch input:checked + .track { background: var(--verde-claro); }
+.switch input:checked + .track::after { transform: translateX(20px); }
+
+.img-preview { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.img-preview .thumb { width: 56px; height: 56px; }
+
+.toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(16px); background: var(--verde); color: #fff; padding: 12px 22px; border-radius: 50px; font-size: .88rem; box-shadow: var(--sombra); z-index: 200; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.erro { background: var(--erro); }
+
+/* ── Responsivo: tabela vira cards ── */
+@media (max-width: 768px) {
+  .container { padding: 16px 14px 80px; }
+  table.grid { display: none; }
+  .card-lista { display: grid; gap: 12px; }
+  .prod-card { background: var(--branco); border-radius: var(--raio); box-shadow: var(--sombra); padding: 14px; display: flex; gap: 12px; align-items: flex-start; }
+  .prod-card .thumb { width: 48px; height: 48px; flex-shrink: 0; }
+  .prod-card .info { flex: 1; min-width: 0; }
+  .prod-card .info .nome { font-weight: 600; color: var(--verde); }
+  .prod-card .info .meta { font-size: .8rem; color: var(--texto-cl); display: flex; flex-wrap: wrap; gap: 6px 10px; margin-top: 4px; align-items: center; }
+  .prod-card .acoes { flex-direction: column; }
+  .campo-linha { grid-template-columns: 1fr; }
+  .modal-overlay { padding: 12px 10px; }
+}
+@media (max-width: 420px) {
+  .topbar .user .nome { display: none; }
+  .topbar { padding: 10px 14px; }
+}

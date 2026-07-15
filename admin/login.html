@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Entrar · Painel Nutra</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232D5425'/%3E%3Cpath d='M16 25 Q11 18 10 12 Q9.5 7 16 4 Q22.5 7 22 12 Q21 18 16 25Z' fill='none' stroke='%23F4EFE4' stroke-width='1.6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="/logo.png" alt="Nutra Produtos Naturais">
+      <p>Painel administrativo</p>
+    </div>
+    <h1>Bem-vindo 🌿</h1>
+    <p class="sub">Entre para gerenciar o catálogo</p>
+
+    <div class="alerta erro" id="alerta"></div>
+
+    <form id="formLogin" autocomplete="on">
+      <div class="campo">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" required autocomplete="username" placeholder="voce@exemplo.com">
+      </div>
+      <div class="campo">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" required autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <button type="submit" class="btn btn-primary" id="btnEntrar" style="width:100%;margin-top:6px;">Entrar</button>
+    </form>
+  </div>
+</div>
+
+<script>
+(function () {
+  var form = document.getElementById('formLogin');
+  var alerta = document.getElementById('alerta');
+  var btn = document.getElementById('btnEntrar');
+
+  function erro(msg) {
+    alerta.textContent = msg;
+    alerta.classList.add('show');
+  }
+
+  // Se já está logado, vai direto ao dashboard.
+  fetch('/api/auth/me', { credentials: 'include' })
+    .then(function (r) { if (r.ok) location.replace('dashboard.html'); });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    alerta.classList.remove('show');
+    btn.disabled = true; btn.textContent = 'Entrando...';
+    fetch('/api/auth/login', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: document.getElementById('email').value,
+        senha: document.getElementById('senha').value,
+      }),
+    })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        if (res.ok) { location.replace('dashboard.html'); return; }
+        erro(res.j.erro || 'Não foi possível entrar');
+        btn.disabled = false; btn.textContent = 'Entrar';
+      })
+      .catch(function () {
+        erro('Erro de conexão com o servidor');
+        btn.disabled = false; btn.textContent = 'Entrar';
+      });
+  });
+})();
+</script>
+</body>
+</html>

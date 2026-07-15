@@ -1,0 +1,56 @@
+# Deploy em VPS (Hostinger com Ubuntu + Docker). Sobe MySQL + API (que já serve
+# o site público e o painel na mesma origem). O HTTPS/domínio fica no Nginx do
+# host, fazendo proxy para a porta 3000 (ver DEPLOY-VPS.md e nginx/nutra.conf).
+#
+# Antes de subir: copie ".env.example" para ".env" na raiz e preencha os valores.
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_CLIENT: mysql
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      SERVE_STATIC: "true"
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRA_HORAS: ${JWT_EXPIRA_HORAS:-12}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+      ADMIN_NOME: ${ADMIN_NOME:-Administrador}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-4}
+    volumes:
+      - uploads:/app/api/uploads
+    ports:
+      # Exposto só em localhost; o Nginx do host faz o proxy + HTTPS.
+      - "127.0.0.1:3000:3000"
+
+volumes:
+  db_data:
+  uploads:

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel · Nutra Produtos Naturais</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232D5425'/%3E%3Cpath d='M16 25 Q11 18 10 12 Q9.5 7 16 4 Q22.5 7 22 12 Q21 18 16 25Z' fill='none' stroke='%23F4EFE4' stroke-width='1.6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="marca">
+    <img src="/logo-claro.png" alt="Nutra">
+    <strong>Painel</strong>
+  </div>
+  <div class="user">
+    <span class="nome" id="adminNome"></span>
+    <button class="btn-logout" id="btnLogout">Sair</button>
+  </div>
+</header>
+
+<main class="container">
+  <div class="tabs">
+    <button class="tab ativo" data-painel="produtos">Produtos</button>
+    <button class="tab" data-painel="categorias">Categorias</button>
+  </div>
+
+  <!-- ── PRODUTOS ── -->
+  <section class="painel ativo" id="painel-produtos">
+    <div class="toolbar">
+      <input type="search" class="busca" id="prodBusca" placeholder="🔍 Buscar produto...">
+      <select id="prodCategoria"><option value="">Todas as categorias</option></select>
+      <select id="prodStatus">
+        <option value="todos">Todos os status</option>
+        <option value="ativo">Somente ativos</option>
+        <option value="inativo">Somente inativos</option>
+      </select>
+      <span class="spacer"></span>
+      <button class="btn btn-primary" id="btnNovoProduto">+ Novo produto</button>
+    </div>
+    <div class="tabela-wrap">
+      <table class="grid" id="prodTabela">
+        <thead>
+          <tr>
+            <th class="col-img"></th>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th>Status</th>
+            <th>Preço</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="prodTbody"></tbody>
+      </table>
+      <div class="card-lista" id="prodCards"></div>
+      <div class="carregando" id="prodCarregando">Carregando...</div>
+      <div class="vazio" id="prodVazio" style="display:none;">Nenhum produto encontrado 🌿</div>
+    </div>
+  </section>
+
+  <!-- ── CATEGORIAS ── -->
+  <section class="painel" id="painel-categorias">
+    <div class="toolbar">
+      <span class="spacer"></span>
+      <button class="btn btn-primary" id="btnNovaCategoria">+ Nova categoria</button>
+    </div>
+    <div class="tabela-wrap">
+      <table class="grid" id="catTabela">
+        <thead>
+          <tr><th class="col-img"></th><th>Nome</th><th>Produtos</th><th>Ordem</th><th></th></tr>
+        </thead>
+        <tbody id="catTbody"></tbody>
+      </table>
+      <div class="card-lista" id="catCards"></div>
+      <div class="carregando" id="catCarregando">Carregando...</div>
+      <div class="vazio" id="catVazio" style="display:none;">Nenhuma categoria ainda.</div>
+    </div>
+  </section>
+</main>
+
+<!-- ── Modal Produto ── -->
+<div class="modal-overlay" id="modalProduto">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalProdutoTitulo">Novo produto</h2>
+      <button class="modal-close" data-fechar>&times;</button>
+    </div>
+    <form id="formProduto">
+      <div class="modal-body">
+        <input type="hidden" id="pId">
+        <div class="campo">
+          <label for="pNome">Nome *</label>
+          <input type="text" id="pNome" required maxlength="255">
+        </div>
+        <div class="campo-linha">
+          <div class="campo">
+            <label for="pCategoria">Categoria</label>
+            <select id="pCategoria"><option value="">— sem categoria —</option></select>
+          </div>
+          <div class="campo">
+            <label for="pEmoji">Emoji</label>
+            <input type="text" id="pEmoji" maxlength="8" placeholder="🌿">
+          </div>
+        </div>
+        <div class="campo">
+          <label for="pImagem">Imagem do produto</label>
+          <input type="file" id="pImagem" accept="image/*">
+          <div class="img-preview">
+            <div class="thumb" id="pPreview">🌿</div>
+            <button type="button" class="btn btn-ghost btn-sm" id="pRemoverImg" style="display:none;">Remover imagem</button>
+          </div>
+          <input type="hidden" id="pImagemUrl">
+        </div>
+        <div class="campo-linha">
+          <div class="campo">
+            <label for="pPreco">Preço (opcional, não exibido no site)</label>
+            <input type="text" id="pPreco" inputmode="decimal" placeholder="ex.: 12,90">
+          </div>
+          <div class="campo">
+            <label for="pOrdem">Ordem</label>
+            <input type="number" id="pOrdem" value="0">
+          </div>
+        </div>
+        <div class="campo">
+          <label style="margin-bottom:10px;">Gramagem (deixe vazio para usar o padrão da loja: 100 / 50 / 5000)</label>
+          <div class="campo-linha" style="grid-template-columns:1fr 1fr 1fr;">
+            <input type="number" id="pGramaMin" placeholder="mín (100)">
+            <input type="number" id="pGramaStep" placeholder="passo (50)">
+            <input type="number" id="pGramaMax" placeholder="máx (5000)">
+          </div>
+        </div>
+        <div class="campo">
+          <label class="switch">
+            <input type="checkbox" id="pAtivo" checked>
+            <span class="track"></span>
+            <span>Produto ativo (visível no site)</span>
+          </label>
+        </div>
+        <div class="campo">
+          <label class="switch">
+            <input type="checkbox" id="pDisponivel" checked>
+            <span class="track"></span>
+            <span>Disponível para compra (se desligado, aparece como “Indisponível”)</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" data-fechar>Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btnSalvarProduto">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Modal Categoria ── -->
+<div class="modal-overlay" id="modalCategoria">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalCategoriaTitulo">Nova categoria</h2>
+      <button class="modal-close" data-fechar>&times;</button>
+    </div>
+    <form id="formCategoria">
+      <div class="modal-body">
+        <input type="hidden" id="cId">
+        <div class="campo">
+          <label for="cNome">Nome *</label>
+          <input type="text" id="cNome" required maxlength="160">
+        </div>
+        <div class="campo-linha">
+          <div class="campo">
+            <label for="cEmoji">Emoji</label>
+            <input type="text" id="cEmoji" maxlength="8" placeholder="🌿">
+          </div>
+          <div class="campo">
+            <label for="cOrdem">Ordem</label>
+            <input type="number" id="cOrdem" value="0">
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" data-fechar>Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btnSalvarCategoria">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+# Segredos e artefatos — nunca commitar
+.env
+api/.env
+api/node_modules/
+api/data/
+api/uploads/
+*.log
+
+# IDE
+.idea/
+.vscode/
+.DS_Store

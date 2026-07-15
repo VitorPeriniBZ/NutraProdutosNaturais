@@ -1,0 +1,757 @@
+[
+  {
+    "n": "Chips de morango",
+    "c": "Snacks",
+    "e": "🍿"
+  },
+  {
+    "n": "Chips de frutas",
+    "c": "Snacks",
+    "e": "🍿"
+  },
+  {
+    "n": "Chips de vegetais",
+    "c": "Snacks",
+    "e": "🍿"
+  },
+  {
+    "n": "Chips de coco",
+    "c": "Snacks",
+    "e": "🍿"
+  },
+  {
+    "n": "Biscoitinho de arroz sabor barbecue",
+    "c": "Snacks",
+    "e": "🍿"
+  },
+  {
+    "n": "Biscoitinho de arroz sabor mostarda e mel",
+    "c": "Snacks",
+    "e": "🍿"
+  },
+  {
+    "n": "Biscoitinho de arroz sabor tomate",
+    "c": "Snacks",
+    "e": "🍿"
+  },
+  {
+    "n": "Milho torrado sabor mostarda e mel",
+    "c": "Snacks",
+    "e": "🍿"
+  },
+  {
+    "n": "Semente de chia",
+    "c": "Grãos",
+    "e": "🌾"
+  },
+  {
+    "n": "Gergelim branco",
+    "c": "Grãos",
+    "e": "🌾"
+  },
+  {
+    "n": "Gergelim preto",
+    "c": "Grãos",
+    "e": "🌾"
+  },
+  {
+    "n": "Semente de girassol",
+    "c": "Grãos",
+    "e": "🌾"
+  },
+  {
+    "n": "Grão de bico",
+    "c": "Grãos",
+    "e": "🌾"
+  },
+  {
+    "n": "Linhaça dourada",
+    "c": "Grãos",
+    "e": "🌾"
+  },
+  {
+    "n": "Linhaça marrom",
+    "c": "Grãos",
+    "e": "🌾"
+  },
+  {
+    "n": "Quinoa branca",
+    "c": "Grãos",
+    "e": "🌾"
+  },
+  {
+    "n": "Quinoa mista",
+    "c": "Grãos",
+    "e": "🌾"
+  },
+  {
+    "n": "Semente de abóbora",
+    "c": "Grãos",
+    "e": "🌾"
+  },
+  {
+    "n": "Ashwagandha",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Catuaba",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Creatina",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Extrato de soja",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farelo de aveia",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha de aveia",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha de amêndoa",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha de arroz",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha de banana verde",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha de batata doce",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha de beringela",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha de beterraba",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha de uva",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha de chia",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha de coco",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha de grão de bico",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Feno grego em pó",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha de linhaça dourada",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha de maracujá",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Farinha panko",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Fibra de maçã",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Ginseng",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Guaraná em pó",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Laranja moro",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Maca peruana negra",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Marapuama",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Moringa",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Ora pro nobis",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Polvilho azedo",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Polvilho doce",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Psyllium",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Tribullus terrestris em pó",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Chlorella",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Açúcar de coco",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Açúcar mascavo",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Cacau em pó 100%",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Eritritol",
+    "c": "Farinhas Funcionais",
+    "e": "🌿"
+  },
+  {
+    "n": "Amêndoa laminada",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Amendoim com sal",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Amendoim sem sal",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Castanha de caju",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Castanha do pará",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Castanha de caju triturada",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Amendoim triturado",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Granola com banana",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Granola de frutas vermelhas",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Granola tradicional",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Granola com maçã",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Granola 0% açúcar",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Mix de nuts",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Nozes",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Pistache",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Leite de coco em pó",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Coco ralado em flocos",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Damasco",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Ameixa sem caroço",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Uva passa",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Tâmara",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Cranberry",
+    "c": "Castanhas & Frutas Secas",
+    "e": "🥜"
+  },
+  {
+    "n": "Açafrão",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Alho em pó",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Alho frito em flocos",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Alho granulado",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Bife acebolado",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Cebola crispy",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Cebola em flocos",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Cebola em pó",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Cebolinha desidratada",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Chimichurri tradicional",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Chimichurri defumado",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Chimichurri barbecue",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Chimichurri com limão",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Cominho",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Creme de cebola",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Colorau",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Curry",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Ervas finas",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Orange pepper",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Lemon pepper",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Limão e ervas finas",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Louro em folha",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Páprica doce",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Páprica defumada",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Páprica picante",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Pega marido",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Pega esposa",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Pimenta calabresa",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Pimenta do reino",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Pimenta do reino em grão",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Pimenta Jamaica",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Sal rosa",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Salsa desidratada",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Tempero baiano",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Salsa cebola e alho",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Tempero para feijão",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Mix de saladas",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Orégano",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Tempero Edu",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Tempero Ana",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Vinagrete",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Proteína de soja clara",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Proteína de soja escura",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Proteína de soja sabor bacon",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Tempero nutra",
+    "c": "Temperos",
+    "e": "🧂"
+  },
+  {
+    "n": "Alecrim",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Anis estrelado",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Barbatimão",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Boldo",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Camomila",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Canela em pau",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Canela em pó",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Capim limão",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Cardo Mariano",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Carqueja doce",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Cavalinha",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Chá verde",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Dente de leão",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Erva baleeira",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Erva doce",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Funcho",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Graviola",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Guacco",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Hibisco",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Hortelã",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Ipê roxo",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Melissa / erva cidreira",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Mulungu",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Para de vaca",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Quebra pedra",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Sene",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Unha de gato",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Uxi amarelo",
+    "c": "Ervas",
+    "e": "🌱"
+  },
+  {
+    "n": "Espinheira santa",
+    "c": "Ervas",
+    "e": "🌱"
+  }
+]
