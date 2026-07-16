@@ -58,7 +58,7 @@ const config = {
   maxUploadMb: int(env.MAX_UPLOAD_MB, 4),
 
   // Autenticação (usada na Fase 2)
-  jwtSecret: env.JWT_SECRET || 'troque-este-segredo-em-producao',
+  jwtSecret: env.JWT_SECRET || (env.NODE_ENV === 'production' ? '' : 'dev-secret-inseguro-somente-local'),
   jwtExpiraHoras: int(env.JWT_EXPIRA_HORAS, 12),
   cookieSecure: bool(env.COOKIE_SECURE, env.NODE_ENV === 'production'),
   cookieName: env.COOKIE_NAME || 'nutra_admin',
@@ -77,5 +77,16 @@ const config = {
     max: int(env.GRAMA_MAX, 5000),
   },
 };
+
+// Em produção, exige um JWT_SECRET forte definido por env. Sem isso, tokens de
+// admin poderiam ser forjados por qualquer um que conheça o padrão do código.
+if (config.nodeEnv === 'production') {
+  if (!config.jwtSecret || config.jwtSecret.length < 32) {
+    throw new Error(
+      'JWT_SECRET ausente ou fraco em produção. Gere um segredo forte, ex.: ' +
+        'node -e "console.log(require(\'crypto\').randomBytes(48).toString(\'hex\'))"'
+    );
+  }
+}
 
 module.exports = config;

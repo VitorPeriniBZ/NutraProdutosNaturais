@@ -4,6 +4,7 @@ api/.env
 api/node_modules/
 api/data/
 api/uploads/
+/data/
 *.log
 
 # IDE

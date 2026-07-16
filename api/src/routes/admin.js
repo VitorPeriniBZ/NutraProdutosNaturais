@@ -188,19 +188,30 @@ router.delete('/categorias/:id', async (req, res, next) => {
 });
 
 // ───────────────────────── Upload de imagem ─────────────────────────
+// Extensão SEMPRE derivada do mimetype validado (allowlist), nunca do nome
+// enviado pelo cliente — impede salvar, ex., um ".html" que o /uploads
+// serviria como HTML executável (XSS armazenado).
+const MIME_EXT = {
+  'image/jpeg': '.jpg',
+  'image/jpg': '.jpg',
+  'image/png': '.png',
+  'image/webp': '.webp',
+  'image/gif': '.gif',
+  'image/avif': '.avif',
+};
 fs.mkdirSync(config.uploadDir, { recursive: true });
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, config.uploadDir),
   filename: (req, file, cb) => {
-    const ext = (path.extname(file.originalname) || '').toLowerCase().replace(/[^.a-z0-9]/g, '');
-    cb(null, Date.now() + '-' + crypto.randomBytes(6).toString('hex') + (ext || '.jpg'));
+    const ext = MIME_EXT[file.mimetype] || '.jpg';
+    cb(null, Date.now() + '-' + crypto.randomBytes(6).toString('hex') + ext);
   },
 });
 const upload = multer({
   storage,
   limits: { fileSize: config.maxUploadMb * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    if (/^image\/(jpe?g|png|webp|gif|avif)$/.test(file.mimetype)) cb(null, true);
+    if (MIME_EXT[file.mimetype]) cb(null, true);
     else cb(new Error('Formato inválido: envie uma imagem (JPG, PNG, WEBP, GIF ou AVIF)'));
   },
 });

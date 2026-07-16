@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 const config = require('./config');
 
 const produtosRouter = require('./routes/produtos');
@@ -13,6 +14,10 @@ const categoriasRouter = require('./routes/categorias');
 const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1); // atrás do Nginx (VPS) / proxy da hospedagem
+
+// Cabeçalhos de segurança. CSP desligada por padrão para não quebrar o
+// frontend estático inline; o essencial (nosniff, no-referrer, frameguard) fica ativo.
+app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: false }));
@@ -49,7 +54,15 @@ for (const [rota, arquivo] of [
 
 // ── Uploads de imagem (disco) ──
 if (fs.existsSync(config.uploadDir)) {
-  app.use('/uploads', express.static(config.uploadDir, { maxAge: '7d' }));
+  app.use(
+    '/uploads',
+    express.static(config.uploadDir, {
+      maxAge: '7d',
+      // Impede que o browser reinterprete o conteúdo (defesa extra além da
+      // allowlist de extensão no upload).
+      setHeaders: (res) => res.setHeader('X-Content-Type-Options', 'nosniff'),
+    })
+  );
 }
 
 // ── Frontend estático ──
