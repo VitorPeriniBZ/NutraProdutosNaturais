@@ -14,7 +14,7 @@ function opcoesCookie() {
   return {
     httpOnly: true,
     secure: config.cookieSecure,
-    sameSite: 'lax',
+    sameSite: 'strict',
     maxAge: config.jwtExpiraHoras * 60 * 60 * 1000,
     path: '/',
   };

@@ -10,19 +10,26 @@
     "dev": "node --watch src/server.js",
     "migrate": "node src/db/migrate.js",
     "seed": "node src/db/seed.js",
-    "setup": "node src/db/migrate.js && node src/db/seed.js"
+    "setup": "node src/db/migrate.js && node src/db/seed.js",
+    "lint": "eslint src tests",
+    "test": "node --test"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
     "express": "^4.21.2",
     "express-rate-limit": "^7.4.1",
+    "file-type": "^21.3.4",
     "helmet": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.1",
     "mysql2": "^3.11.5"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "supertest": "^7.2.2"
   }
 }

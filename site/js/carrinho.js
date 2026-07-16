@@ -1,5 +1,5 @@
 (function(){
-  var PHONE='5527996600444', MIN=100, STEP=50, MAXG=5000, KEY='nutra_cart_v1', cart=[];
+  var PHONE=(window.NUTRA_CONFIG&&window.NUTRA_CONFIG.whatsapp)||'5527996600444', MIN=100, STEP=50, MAXG=5000, KEY='nutra_cart_v1', cart=[];
   function load(){ try{var s=localStorage.getItem(KEY);cart=s?JSON.parse(s):[];}catch(e){cart=[];} if(!Array.isArray(cart))cart=[]; }
   function save(){ try{localStorage.setItem(KEY,JSON.stringify(cart));}catch(e){} }
   function find(n){ for(var i=0;i<cart.length;i++) if(cart[i].n===n) return cart[i]; return null; }
@@ -42,8 +42,19 @@
   window.addToCart=add;
   window.nutraChange=function(n,d){var it=find(n);if(!it)return;it.g=Math.max(MIN,Math.min(it.g+d*STEP,MAXG));save();renderCart();};
   window.nutraRemove=function(n){cart=cart.filter(function(x){return x.n!==n;});save();renderCart();};
-  window.nutraOpenCart=function(){document.getElementById('nutraDrawer').classList.add('open');document.getElementById('nutraOverlay').classList.add('open');document.body.style.overflow='hidden';};
-  window.nutraCloseCart=function(){document.getElementById('nutraDrawer').classList.remove('open');document.getElementById('nutraOverlay').classList.remove('open');document.body.style.overflow='';};
+  var cartTrap=null, cartAberto=false;
+  window.nutraOpenCart=function(){
+    var d=document.getElementById('nutraDrawer');
+    d.classList.add('open');document.getElementById('nutraOverlay').classList.add('open');document.body.style.overflow='hidden';
+    cartAberto=true;
+    if(window.criarFocusTrap){ if(!cartTrap) cartTrap=window.criarFocusTrap(d); cartTrap.ativar(); }
+  };
+  window.nutraCloseCart=function(){
+    if(!cartAberto) return; cartAberto=false;
+    document.getElementById('nutraDrawer').classList.remove('open');document.getElementById('nutraOverlay').classList.remove('open');document.body.style.overflow='';
+    if(cartTrap) cartTrap.desativar();
+  };
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') window.nutraCloseCart(); });
   window.nutraFinalize=function(){
     if(!cart.length) return;
     var msg='Olá! Quero fazer um pedido na Nutra 🌿\n\n';
@@ -61,7 +72,7 @@
   }
   window.renderCard=function(p){
     var img = p.img
-      ? '<img src="'+esc(p.img)+'" alt="'+esc(p.n)+'" loading="lazy">'
+      ? '<img src="'+esc(p.img)+'" alt="'+esc(p.n)+'" loading="lazy" width="400" height="300">'
       : '<span class="pcat-img-emoji">'+esc(p.e)+'</span><span class="pcat-img-label">foto em breve</span>';
     var off = (p.disp === false);
     var botao = off
@@ -97,7 +108,11 @@
   // (idempotente: o guard dataset.nutraWired evita listeners duplicados).
   window.wireCatalog = wireCatalog;
   window.wireFeatured = wireFeatured;
-  function init(){ load(); if(typeof render==='function'){try{render();}catch(e){}} wireCatalog(); wireFeatured(); renderCart(); }
+  function init(){
+    var d=document.getElementById('nutraDrawer');
+    if(d){ d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label','Carrinho de compras'); }
+    load(); if(typeof render==='function'){try{render();}catch(e){}} wireCatalog(); wireFeatured(); renderCart();
+  }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
   window.addEventListener('load',function(){ if(typeof render==='function'){try{render();}catch(e){}} wireCatalog(); wireFeatured(); });
 })();

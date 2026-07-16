@@ -1,17 +1,21 @@
 // ─── Catálogo Nutra ───
-// Fonte de dados: API (GET /api/produtos, GET /api/categorias).
-// Antes era um array estático ALL_PRODS embutido no HTML; agora vem do banco.
+// Fonte de dados: API (GET /api/produtos, /api/categorias, /api/badges).
+// Paginação SERVER-SIDE: busca 12 produtos por vez conforme o usuário navega,
+// aplicando categoria/busca/badge como filtros na própria query (em vez de
+// carregar tudo e paginar no cliente).
 // A base da API pode ser sobrescrita definindo window.NUTRA_API_BASE antes deste
 // script (útil se um dia o frontend for servido separado da API). Vazio = mesma origem.
 var API_BASE = (window.NUTRA_API_BASE || '');
+var WHATSAPP = (window.NUTRA_CONFIG && window.NUTRA_CONFIG.whatsapp) || '5527996600444';
 
-var ALL_PRODS = [];        // populado pelo fetch: {id, n, c, e, img, disp, badges, desc, destaque}
-var PER_PAGE  = 12;
-var curFilter = 'Todos';
-var curBadge  = null;      // id da badge selecionada no filtro (null = todas)
-var curPage   = 1;
-var filtered  = [];
-var loaded    = false;     // evita "nenhum produto" piscar antes do fetch terminar
+var PER_PAGE   = 12;
+var curFilter  = 'Todos';  // categoria selecionada
+var curBadge   = null;     // id da badge selecionada (null = todas)
+var curSearch  = '';       // termo de busca atual
+var curPage    = 1;
+var totalGeral = null;     // total de produtos ativos sem filtro (para o rótulo)
+var loaded     = false;    // evita "nenhum produto" piscar antes do 1º fetch
+var buscaTimer = null;
 
 // Gradientes rotativos para os cards de destaque sem foto (mantém o visual colorido).
 var DESTAQUE_GRADS = [
@@ -26,6 +30,17 @@ function esc(s) {
   return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
   });
+}
+
+// Converte um item da API no modelo usado pelos cards.
+function mapProduto(p) {
+  return {
+    id: p.id, n: p.nome, c: p.categoria, e: p.emoji || '🌿', img: p.imagem_url || '',
+    disp: (p.disponivel == null) ? true : !!Number(p.disponivel),
+    badges: p.badges || [],
+    desc: p.descricao || '',
+    destaque: !!Number(p.destaque)
+  };
 }
 
 // Chips de badge (estilo transparente com letra branca, como nos destaques).
@@ -43,19 +58,19 @@ function waIcon() {
 // Card padrão (fluxo WhatsApp direto). O carrinho.js sobrescreve window.renderCard
 // para trocar o botão por "Adicionar ao carrinho" — mesma dinâmica de antes.
 function waLink(nome) {
-  return 'https://wa.me/5527996600444?text=' + encodeURIComponent('Oi! Quero pedir: ' + nome + ' 🌿');
+  return 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent('Oi! Quero pedir: ' + nome + ' 🌿');
 }
 function imgHtml(p) {
-  if (p.img) return '<img src="' + p.img + '" alt="' + p.n + '" loading="lazy">';
-  return '<span class="pcat-img-emoji">' + p.e + '</span><span class="pcat-img-label">foto em breve</span>';
+  if (p.img) return '<img src="' + esc(p.img) + '" alt="' + esc(p.n) + '" loading="lazy" width="400" height="300">';
+  return '<span class="pcat-img-emoji">' + esc(p.e) + '</span><span class="pcat-img-label">foto em breve</span>';
 }
 function renderCard(p) {
   if (p.disp === false) {
     return '<div class="pcat-card pcat-off">'
       + '<div class="pcat-img">' + badgesHtml(p) + imgHtml(p) + '</div>'
       + '<div class="pcat-body">'
-      + '<span class="pcat-tag">' + p.c + '</span>'
-      + '<span class="pcat-name">' + p.n + '</span>'
+      + '<span class="pcat-tag">' + esc(p.c) + '</span>'
+      + '<span class="pcat-name">' + esc(p.n) + '</span>'
       + '<button class="pcat-wa pcat-wa-off" disabled>Indisponível</button>'
       + '</div>'
       + '</div>';
@@ -63,110 +78,102 @@ function renderCard(p) {
   return '<a href="' + waLink(p.n) + '" target="_blank" class="pcat-card">'
     + '<div class="pcat-img">' + badgesHtml(p) + imgHtml(p) + '</div>'
     + '<div class="pcat-body">'
-    + '<span class="pcat-tag">' + p.c + '</span>'
-    + '<span class="pcat-name">' + p.n + '</span>'
+    + '<span class="pcat-tag">' + esc(p.c) + '</span>'
+    + '<span class="pcat-name">' + esc(p.n) + '</span>'
     + '<button class="pcat-wa">' + waIcon() + ' Pedir pelo WhatsApp</button>'
     + '</div>'
     + '</a>';
 }
 
-function applyFilters() {
-  var q = document.getElementById('pSearch').value.trim().toLowerCase();
-  filtered = ALL_PRODS.filter(function(p) {
-    var matchCat   = (curFilter === 'Todos' || p.c === curFilter);
-    var matchQ     = !q || p.n.toLowerCase().indexOf(q) > -1;
-    var matchBadge = !curBadge || (p.badges || []).some(function(b){ return b.id === curBadge; });
-    return matchCat && matchQ && matchBadge;
-  });
-  curPage = 1;
-  render();
+// ── Busca uma página de produtos na API, aplicando os filtros atuais ──
+function fetchPage() {
+  var params = new URLSearchParams();
+  params.set('pagina', curPage);
+  params.set('por_pagina', PER_PAGE);
+  if (curFilter && curFilter !== 'Todos') params.set('categoria', curFilter);
+  if (curSearch) params.set('busca', curSearch);
+  if (curBadge) params.set('badge', curBadge);
+  return fetch(API_BASE + '/api/produtos?' + params.toString())
+    .then(function (r) { if (!r.ok) throw new Error('produtos ' + r.status); return r.json(); })
+    .then(function (data) {
+      loaded = true;
+      renderPage(data);
+      if (typeof window.wireCatalog === 'function') window.wireCatalog();
+    })
+    .catch(function (err) {
+      loaded = true;
+      var grid = document.getElementById('pcatGrid');
+      if (grid) grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--texto-cl);padding:40px;">Não foi possível carregar os produtos agora. Tente recarregar a página. 🌿</p>';
+      console.error('Falha ao carregar catálogo:', err);
+    });
 }
 
-function setFilter(cat, btn) {
-  curFilter = cat;
-  document.querySelectorAll('.pf-btn').forEach(function(b){b.classList.remove('pf-active');});
-  if (btn) btn.classList.add('pf-active');
-  applyFilters();
-}
-
-function render() {
+function renderPage(data) {
   var grid  = document.getElementById('pcatGrid');
   var pgDiv = document.getElementById('pPagination');
   var empty = document.getElementById('pEmpty');
   if (!grid) return;
 
-  // Ainda carregando: não mostra "nenhum produto" nem paginação.
-  if (!loaded) {
+  var itens = (data && data.itens) ? data.itens.map(mapProduto) : [];
+  var total = (data && data.total != null) ? Number(data.total) : itens.length;
+  var pages = Math.max(1, Math.ceil(total / PER_PAGE));
+
+  // Rótulo "X produtos disponíveis" — fixado no total sem filtros.
+  if (totalGeral === null && curFilter === 'Todos' && !curBadge && !curSearch) {
+    totalGeral = total;
+    var label = document.getElementById('pTotalLabel');
+    if (label) label.textContent = totalGeral + ' produtos disponíveis';
+  }
+
+  if (!itens.length) {
     grid.innerHTML = '';
     if (pgDiv) pgDiv.innerHTML = '';
-    if (empty) empty.style.display = 'none';
+    if (empty) empty.style.display = 'block';
     return;
   }
-
-  var total = filtered.length;
-  var pages = Math.ceil(total / PER_PAGE);
-
-  if (!total) {
-    grid.innerHTML = '';
-    pgDiv.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
-  empty.style.display = 'none';
-
-  var start = (curPage - 1) * PER_PAGE;
-  var slice = filtered.slice(start, start + PER_PAGE);
-  grid.innerHTML = slice.map(renderCard).join('');
+  if (empty) empty.style.display = 'none';
+  grid.innerHTML = itens.map(renderCard).join('');
 
   // Paginação
+  if (!pgDiv) return;
   if (pages <= 1) { pgDiv.innerHTML = ''; return; }
   var pg = '';
-  pg += '<button class="pg-btn" onclick="goCatPage('+(curPage-1)+')" '+(curPage===1?'disabled':'')+'>←</button>';
-  for (var i=1;i<=pages;i++) {
-    if (i===1||i===pages||Math.abs(i-curPage)<=2) {
-      pg += '<button class="pg-btn'+(i===curPage?' pg-active':'')+'" onclick="goCatPage('+i+')">'+i+'</button>';
-    } else if (Math.abs(i-curPage)===3) {
+  pg += '<button class="pg-btn" aria-label="Página anterior" onclick="goCatPage(' + (curPage - 1) + ')" ' + (curPage === 1 ? 'disabled' : '') + '>←</button>';
+  for (var i = 1; i <= pages; i++) {
+    if (i === 1 || i === pages || Math.abs(i - curPage) <= 2) {
+      pg += '<button class="pg-btn' + (i === curPage ? ' pg-active' : '') + '" aria-label="Página ' + i + '"' + (i === curPage ? ' aria-current="page"' : '') + ' onclick="goCatPage(' + i + ')">' + i + '</button>';
+    } else if (Math.abs(i - curPage) === 3) {
       pg += '<span style="color:var(--texto-cl);padding:0 4px;">…</span>';
     }
   }
-  pg += '<button class="pg-btn" onclick="goCatPage('+(curPage+1)+')" '+(curPage===pages?'disabled':'')+'>→</button>';
+  pg += '<button class="pg-btn" aria-label="Próxima página" onclick="goCatPage(' + (curPage + 1) + ')" ' + (curPage === pages ? 'disabled' : '') + '>→</button>';
   pgDiv.innerHTML = pg;
 }
 
 function goCatPage(p) {
   curPage = p;
-  render();
-  document.getElementById('catalogo').scrollIntoView({behavior:'smooth',block:'start'});
+  fetchPage();
+  var alvo = document.getElementById('catalogo');
+  if (alvo) alvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ── Barra de filtros dinâmica (a partir das categorias do banco) ──
-function buildFilterBar(cats, total) {
-  var bar = document.getElementById('pfBar');
-  if (!bar) return;
-  var html = '<button class="pf-btn pf-active" onclick="setFilter(\'Todos\',this)">Todos <span class="pf-count">'+total+'</span></button>';
-  cats.forEach(function(c) {
-    var nome = String(c.nome);
-    var safe = nome.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    html += '<button class="pf-btn" onclick="setFilter(\''+safe+'\',this)">'
-      + (c.emoji ? (c.emoji + ' ') : '') + nome
-      + ' <span class="pf-count">' + c.total + '</span></button>';
-  });
-  bar.innerHTML = html;
+// Busca (debounce): reinicia na página 1 e refaz o fetch com o termo.
+function applyFilters() {
+  clearTimeout(buscaTimer);
+  buscaTimer = setTimeout(function () {
+    var el = document.getElementById('pSearch');
+    curSearch = el ? el.value.trim() : '';
+    curPage = 1;
+    fetchPage();
+  }, 300);
 }
 
-// ── Barra de filtros por badge (só badges com produtos ativos) ──
-function buildBadgeBar(badges) {
-  var bar = document.getElementById('pbBar');
-  if (!bar) return;
-  var comProdutos = (badges || []).filter(function(b){ return Number(b.total) > 0; });
-  if (!comProdutos.length) { bar.style.display = 'none'; return; }
-  var html = '<span class="pb-label">Filtrar por:</span>';
-  comProdutos.forEach(function(b) {
-    html += '<button class="pb-btn" data-badge="' + b.id + '" onclick="setBadgeFilter(' + b.id + ',this)">'
-      + esc(b.nome) + '</button>';
-  });
-  bar.innerHTML = html;
-  bar.style.display = '';
+function setFilter(cat, btn) {
+  curFilter = cat;
+  document.querySelectorAll('.pf-btn').forEach(function (b) { b.classList.remove('pf-active'); });
+  if (btn) btn.classList.add('pf-active');
+  curPage = 1;
+  fetchPage();
 }
 
 function setBadgeFilter(id, btn) {
@@ -176,15 +183,46 @@ function setBadgeFilter(id, btn) {
     if (btn) btn.classList.remove('pb-active');
   } else {
     curBadge = id;
-    document.querySelectorAll('.pb-btn').forEach(function(b){ b.classList.remove('pb-active'); });
+    document.querySelectorAll('.pb-btn').forEach(function (b) { b.classList.remove('pb-active'); });
     if (btn) btn.classList.add('pb-active');
   }
-  applyFilters();
+  curPage = 1;
+  fetchPage();
 }
 
-// ── Seção "Produtos em destaque" (dinâmica, a partir do banco) ──
-function destaqueImg(p, i) {
-  if (p.img) return '<img src="' + esc(p.img) + '" alt="' + esc(p.n) + '" class="pcard-photo" loading="lazy">';
+// ── Barra de filtros de categoria (a partir das categorias do banco) ──
+function buildFilterBar(cats, total) {
+  var bar = document.getElementById('pfBar');
+  if (!bar) return;
+  var html = '<button class="pf-btn pf-active" onclick="setFilter(\'Todos\',this)">Todos <span class="pf-count">' + total + '</span></button>';
+  cats.forEach(function (c) {
+    var nome = String(c.nome);
+    var safe = nome.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    html += '<button class="pf-btn" onclick="setFilter(\'' + safe + '\',this)">'
+      + (c.emoji ? (c.emoji + ' ') : '') + esc(nome)
+      + ' <span class="pf-count">' + c.total + '</span></button>';
+  });
+  bar.innerHTML = html;
+}
+
+// ── Barra de filtros por badge (só badges com produtos ativos) ──
+function buildBadgeBar(badges) {
+  var bar = document.getElementById('pbBar');
+  if (!bar) return;
+  var comProdutos = (badges || []).filter(function (b) { return Number(b.total) > 0; });
+  if (!comProdutos.length) { bar.style.display = 'none'; return; }
+  var html = '<span class="pb-label">Filtrar por:</span>';
+  comProdutos.forEach(function (b) {
+    html += '<button class="pb-btn" data-badge="' + b.id + '" onclick="setBadgeFilter(' + b.id + ',this)">'
+      + esc(b.nome) + '</button>';
+  });
+  bar.innerHTML = html;
+  bar.style.display = '';
+}
+
+// ── Seção "Produtos em destaque" (dinâmica; buscada à parte da paginação) ──
+function destaqueImg(p) {
+  if (p.img) return '<img src="' + esc(p.img) + '" alt="' + esc(p.n) + '" class="pcard-photo" loading="lazy" width="400" height="300">';
   return '<span class="pcard-emoji" aria-hidden="true">' + esc(p.e || '🌿') + '</span>';
 }
 function destaqueCard(p, i) {
@@ -193,7 +231,7 @@ function destaqueCard(p, i) {
   return '<div class="pcard">'
     + '<div class="pcard-img"' + bg + '>'
     + badgesHtml(p)
-    + destaqueImg(p, i)
+    + destaqueImg(p)
     + '</div>'
     + '<div class="pcard-body">'
     + '<div class="pcard-name">' + esc(p.n) + '</div>'
@@ -206,63 +244,43 @@ function renderDestaque() {
   var grid = document.getElementById('pcardGrid');
   var sec = document.getElementById('produtos');
   if (!grid) return;
-  var destaques = ALL_PRODS.filter(function(p){ return p.destaque; });
-  if (!destaques.length) {
-    // Sem destaques cadastrados: esconde a seção inteira para não ficar um vazio.
-    grid.innerHTML = '';
-    if (sec) sec.style.display = 'none';
-    return;
-  }
-  if (sec) sec.style.display = '';
-  grid.innerHTML = destaques.map(destaqueCard).join('');
-  // Re-vincula os CTAs ao carrinho (carrinho.js), já que os cards são dinâmicos agora.
-  if (typeof window.wireFeatured === 'function') window.wireFeatured();
+  fetch(API_BASE + '/api/produtos?destaque=1&por_pagina=50')
+    .then(function (r) { return r.ok ? r.json() : { itens: [] }; })
+    .then(function (data) {
+      var destaques = (data.itens || []).map(mapProduto);
+      if (!destaques.length) {
+        // Sem destaques cadastrados: esconde a seção para não ficar um vazio.
+        grid.innerHTML = '';
+        if (sec) sec.style.display = 'none';
+        return;
+      }
+      if (sec) sec.style.display = '';
+      grid.innerHTML = destaques.map(destaqueCard).join('');
+      // Re-vincula os CTAs ao carrinho (carrinho.js), já que os cards são dinâmicos.
+      if (typeof window.wireFeatured === 'function') window.wireFeatured();
+    })
+    .catch(function () { if (sec) sec.style.display = 'none'; });
 }
 
-// ── Carga inicial via API ──
+// ── Carga inicial ──
 function loadCatalog() {
-  var pProds = fetch(API_BASE + '/api/produtos?por_pagina=1000')
-    .then(function(r){ if(!r.ok) throw new Error('produtos '+r.status); return r.json(); });
-  var pCats = fetch(API_BASE + '/api/categorias')
-    .then(function(r){ if(!r.ok) throw new Error('categorias '+r.status); return r.json(); })
-    .catch(function(){ return []; }); // barra de filtros é opcional
-  var pBadges = fetch(API_BASE + '/api/badges')
-    .then(function(r){ if(!r.ok) throw new Error('badges '+r.status); return r.json(); })
-    .catch(function(){ return []; }); // filtro de badges é opcional
+  // Barras de filtro (categorias + badges) — opcionais, não bloqueiam o catálogo.
+  fetch(API_BASE + '/api/categorias')
+    .then(function (r) { return r.ok ? r.json() : []; })
+    .then(function (cats) {
+      if (Array.isArray(cats) && cats.length) {
+        var total = cats.reduce(function (s, c) { return s + Number(c.total || 0); }, 0);
+        buildFilterBar(cats, total);
+      }
+    })
+    .catch(function () {});
+  fetch(API_BASE + '/api/badges')
+    .then(function (r) { return r.ok ? r.json() : []; })
+    .then(function (badges) { if (Array.isArray(badges)) buildBadgeBar(badges); })
+    .catch(function () {});
 
-  pProds.then(function(data) {
-    var itens = (data && data.itens) ? data.itens : [];
-    ALL_PRODS = itens.map(function(p) {
-      return {
-        id: p.id, n: p.nome, c: p.categoria, e: p.emoji || '🌿', img: p.imagem_url || '',
-        disp: (p.disponivel == null) ? true : !!Number(p.disponivel),
-        badges: p.badges || [],
-        desc: p.descricao || '',
-        destaque: !!Number(p.destaque)
-      };
-    });
-    filtered = ALL_PRODS.slice();
-    loaded = true;
-
-    var label = document.getElementById('pTotalLabel');
-    if (label) label.textContent = (data.total != null ? data.total : ALL_PRODS.length) + ' produtos disponíveis';
-
-    pCats.then(function(cats) {
-      if (Array.isArray(cats) && cats.length) buildFilterBar(cats, ALL_PRODS.length);
-    });
-    pBadges.then(function(badges) {
-      if (Array.isArray(badges)) buildBadgeBar(badges);
-    });
-
-    renderDestaque();
-    render();
-    if (typeof window.wireCatalog === 'function') window.wireCatalog();
-  }).catch(function(err) {
-    loaded = true;
-    var grid = document.getElementById('pcatGrid');
-    if (grid) grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--texto-cl);padding:40px;">Não foi possível carregar os produtos agora. Tente recarregar a página. 🌿</p>';
-    console.error('Falha ao carregar catálogo:', err);
-  });
+  renderDestaque();
+  fetchPage(); // primeira página do catálogo
 }
 
 // ── Init ──
@@ -273,7 +291,7 @@ if (document.readyState === 'loading') {
 }
 
 // Expõe funções globais para os onclick="" inline
-window.goCatPage   = goCatPage;
-window.setFilter   = setFilter;
+window.goCatPage    = goCatPage;
+window.setFilter    = setFilter;
 window.setBadgeFilter = setBadgeFilter;
 window.applyFilters = applyFilters;

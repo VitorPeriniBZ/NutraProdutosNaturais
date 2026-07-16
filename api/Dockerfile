@@ -13,12 +13,20 @@ COPY api ./api
 COPY site ./site
 COPY admin ./admin
 
-# Uploads persistem em volume (ver compose); garante que a pasta exista
-RUN mkdir -p /app/api/uploads
+# Uploads persistem em volume (ver compose); garante que a pasta exista e
+# pertença ao usuário "node" (a app não roda como root — ver USER abaixo).
+RUN mkdir -p /app/api/uploads && chown -R node:node /app/api/uploads
+
+# curl é usado pelo healthcheck do docker-compose
+RUN apk add --no-cache curl
 
 WORKDIR /app/api
 ENV NODE_ENV=production
 EXPOSE 3000
 
-# Cria/atualiza tabelas e popula (idempotente) e então sobe o servidor.
-CMD ["sh", "-c", "node src/db/migrate.js && node src/db/seed.js && node src/server.js"]
+# Princípio do menor privilégio: não rodar como root.
+USER node
+
+# migrate/seed via start.sh (migrate sempre; seed só na 1ª inicialização),
+# depois sobe o servidor.
+CMD ["sh", "./start.sh"]

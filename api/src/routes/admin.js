@@ -3,7 +3,6 @@
 // Categorias: GET/POST /categorias, PUT/DELETE /categorias/:id
 // Upload:     POST /upload-imagem
 const express = require('express');
-const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const multer = require('multer');
@@ -279,11 +278,33 @@ const upload = multer({
   },
 });
 
-router.post('/upload-imagem', (req, res) => {
-  upload.single('imagem')(req, res, (err) => {
+// Tipos de imagem realmente aceitos (verificados por conteúdo, não pelo header).
+const IMAGENS_REAIS = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif']);
+
+// Confere os "magic bytes" do arquivo salvo. O mimetype enviado pelo cliente é
+// falsificável; aqui inspecionamos o conteúdo real e recusamos qualquer coisa
+// que não seja uma das imagens permitidas.
+async function validarImagemReal(caminho) {
+  const { fileTypeFromFile } = await import('file-type'); // ESM: import dinâmico
+  const tipo = await fileTypeFromFile(caminho);
+  return !!(tipo && IMAGENS_REAIS.has(tipo.mime));
+}
+
+router.post('/upload-imagem', (req, res, next) => {
+  upload.single('imagem')(req, res, async (err) => {
     if (err) return res.status(400).json({ erro: err.message });
     if (!req.file) return res.status(400).json({ erro: 'Nenhum arquivo enviado' });
-    res.status(201).json({ url: '/uploads/' + req.file.filename });
+    try {
+      const ok = await validarImagemReal(req.file.path);
+      if (!ok) {
+        fs.unlink(req.file.path, () => {}); // remove o arquivo suspeito
+        return res.status(400).json({ erro: 'O arquivo enviado não é uma imagem válida.' });
+      }
+      res.status(201).json({ url: '/uploads/' + req.file.filename });
+    } catch (e) {
+      fs.unlink(req.file.path, () => {});
+      next(e);
+    }
   });
 });
 
