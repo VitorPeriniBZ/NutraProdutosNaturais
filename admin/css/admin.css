@@ -187,10 +187,14 @@ table.grid .col-img { width: 52px; }
 .badge-picker { display: flex; flex-wrap: wrap; gap: 8px; }
 .badge-picker-vazio { font-size: .85rem; color: var(--texto-cl); }
 .badge-opt {
-  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
-  padding: 7px 12px; border: 1px solid var(--bege-esc); border-radius: 20px;
-  font-size: .82rem; color: var(--texto-med); user-select: none; transition: all .15s;
+  display: inline-flex; align-items: center; cursor: pointer;
+  padding: 7px 14px; border: 1.5px solid var(--bege-esc); border-radius: 50px;
+  background: var(--branco); font-size: .8rem; font-weight: 500;
+  color: var(--texto-med); user-select: none; transition: all .15s; white-space: nowrap;
 }
-.badge-opt:hover { border-color: var(--verde-claro); background: var(--bege-med); }
-.badge-opt input { width: auto; margin: 0; accent-color: var(--verde); }
-.badge-opt:has(input:checked) { background: #e8f3e4; border-color: var(--verde-claro); color: var(--verde); }
+.badge-opt:hover { border-color: var(--verde-claro); color: var(--verde); }
+/* Esconde o checkbox nativo — o próprio pill indica a seleção. */
+.badge-opt input { position: absolute; opacity: 0; width: 0; height: 0; margin: 0; padding: 0; }
+.badge-opt:has(input:checked) {
+  background: var(--verde); border-color: var(--verde); color: #fff;
+}
