@@ -51,3 +51,10 @@ CREATE TABLE IF NOT EXISTS admins (
 
 CREATE INDEX IF NOT EXISTS idx_produtos_categoria ON produtos(categoria_id);
 CREATE INDEX IF NOT EXISTS idx_produtos_ativo ON produtos(ativo);
+
+-- Configurações da loja editáveis pelo painel (chave/valor). O .env é só o
+-- valor inicial/fallback; o que estiver aqui tem prioridade.
+CREATE TABLE IF NOT EXISTS config_loja (
+  chave TEXT PRIMARY KEY,
+  valor TEXT
+);

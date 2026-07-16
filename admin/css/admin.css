@@ -198,3 +198,18 @@ table.grid .col-img { width: 52px; }
 .badge-opt:has(input:checked) {
   background: var(--verde); border-color: var(--verde); color: #fff;
 }
+
+/* ── Configurações da loja ── */
+.config-form {
+  background: #fff; border: 1px solid var(--bege-esc); border-radius: 14px;
+  padding: 22px; max-width: 760px;
+}
+.config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 18px; }
+.config-sub {
+  font-size: 1.05rem; margin: 18px 0 10px; padding-top: 16px;
+  border-top: 1px solid var(--bege-med);
+}
+.config-acoes { margin-top: 20px; display: flex; justify-content: flex-end; }
+@media (max-width: 620px) {
+  .config-grid { grid-template-columns: 1fr; }
+}

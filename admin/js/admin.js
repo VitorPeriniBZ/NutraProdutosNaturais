@@ -453,6 +453,56 @@
     }).join('');
   }
 
+  // ───────── Configurações da loja ─────────
+  function preencherConfig(c) {
+    c = c || {};
+    var cart = c.cart || {};
+    document.getElementById('cfgName').value = c.name || '';
+    document.getElementById('cfgWhatsapp').value = c.whatsapp || '';
+    document.getElementById('cfgAddress').value = c.address || '';
+    document.getElementById('cfgCity').value = c.city || '';
+    document.getElementById('cfgCep').value = c.cep || '';
+    document.getElementById('cfgHours').value = c.hours || '';
+    document.getElementById('cfgInstagram').value = c.instagram || '';
+    document.getElementById('cfgCartMin').value = cart.minGrams != null ? cart.minGrams : '';
+    document.getElementById('cfgCartStep').value = cart.stepGrams != null ? cart.stepGrams : '';
+    document.getElementById('cfgCartMax').value = cart.maxGrams != null ? cart.maxGrams : '';
+  }
+
+  function carregarConfig() {
+    return api('GET', '/api/admin/config').then(function (c) {
+      preencherConfig(c);
+      document.getElementById('configCarregando').style.display = 'none';
+      document.getElementById('formConfig').style.display = '';
+    });
+  }
+
+  document.getElementById('formConfig').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var payload = {
+      name: document.getElementById('cfgName').value.trim(),
+      whatsapp: document.getElementById('cfgWhatsapp').value.replace(/\D/g, ''),
+      address: document.getElementById('cfgAddress').value.trim(),
+      city: document.getElementById('cfgCity').value.trim(),
+      cep: document.getElementById('cfgCep').value.trim(),
+      hours: document.getElementById('cfgHours').value.trim(),
+      instagram: document.getElementById('cfgInstagram').value.trim(),
+      cart: {
+        minGrams: document.getElementById('cfgCartMin').value,
+        stepGrams: document.getElementById('cfgCartStep').value,
+        maxGrams: document.getElementById('cfgCartMax').value,
+      },
+    };
+    var btn = document.getElementById('btnSalvarConfig');
+    btn.disabled = true;
+    api('PUT', '/api/admin/config', payload).then(function (c) {
+      preencherConfig(c);
+      toast('Configurações salvas 🌿 (o site já reflete)');
+    }).catch(function (err) { toast(err.message, 'erro'); })
+      .finally(function () { btn.disabled = false; });
+  });
+
   // ───────── Início ─────────
-  Promise.all([carregarCategorias(), carregarBadges()]).then(carregarProdutos);
+  document.getElementById('formConfig').style.display = 'none';
+  Promise.all([carregarCategorias(), carregarBadges(), carregarConfig()]).then(carregarProdutos);
 })();

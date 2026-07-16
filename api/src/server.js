@@ -112,7 +112,8 @@ if (fs.existsSync(config.uploadDir)) {
 // ── Injeção server-side dos dados da loja no index.html ──
 // Substitui placeholders {{TOKEN}} pelos valores da config a cada request,
 // mantendo o SEO (meta/JSON-LD chegam prontos no HTML, sem depender de JS).
-const { configPublica } = configRouter;
+// A config efetiva vem do banco (config_loja) com fallback no .env.
+const lojaConfig = require('./lib/lojaConfig');
 const INDEX_PATH = path.join(config.siteDir, 'index.html');
 let indexTemplate = null;
 
@@ -155,10 +156,10 @@ function montarJsonLd(s) {
   };
 }
 
-function renderIndex(req, res, next) {
+async function renderIndex(req, res, next) {
   try {
     if (indexTemplate === null) indexTemplate = fs.readFileSync(INDEX_PATH, 'utf8');
-    const pub = configPublica();
+    const pub = await lojaConfig.carregar();
     const tokens = {
       STORE_NAME: escHtml(pub.name),
       STORE_WHATSAPP: escHtml(pub.whatsapp),
@@ -167,7 +168,7 @@ function renderIndex(req, res, next) {
       STORE_CEP: escHtml(pub.cep),
       STORE_HOURS: escHtml(pub.hours),
       INSTAGRAM_URL: escHtml(pub.instagram),
-      JSONLD: jsonParaScript(montarJsonLd(config.store)),
+      JSONLD: jsonParaScript(montarJsonLd(pub)),
       CONFIG_JSON: jsonParaScript(pub),
     };
     const html = indexTemplate.replace(/\{\{(\w+)\}\}/g, (m, k) => (
