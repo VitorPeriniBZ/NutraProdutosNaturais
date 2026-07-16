@@ -12,6 +12,7 @@ const config = require('./config');
 const produtosRouter = require('./routes/produtos');
 const categoriasRouter = require('./routes/categorias');
 const badgesRouter = require('./routes/badges');
+const configRouter = require('./routes/config');
 
 const app = express();
 app.disable('x-powered-by');
@@ -83,6 +84,7 @@ app.get('/api/health', (req, res) => res.json({ ok: true, db: config.db.client }
 app.use('/api/produtos', produtosRouter);
 app.use('/api/categorias', categoriasRouter);
 app.use('/api/badges', badgesRouter);
+app.use('/api/config', configRouter);
 
 // ── Rotas de autenticação e admin (Fase 2 — montadas se os arquivos existirem) ──
 for (const [rota, arquivo] of [
@@ -107,13 +109,85 @@ if (fs.existsSync(config.uploadDir)) {
   );
 }
 
+// ── Injeção server-side dos dados da loja no index.html ──
+// Substitui placeholders {{TOKEN}} pelos valores da config a cada request,
+// mantendo o SEO (meta/JSON-LD chegam prontos no HTML, sem depender de JS).
+const { configPublica } = configRouter;
+const INDEX_PATH = path.join(config.siteDir, 'index.html');
+let indexTemplate = null;
+
+function escHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"]/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]
+  ));
+}
+// JSON seguro para embutir em <script> (evita fechar a tag por engano).
+function jsonParaScript(obj) {
+  return JSON.stringify(obj).replace(/</g, '\\u003c');
+}
+
+function montarJsonLd(s) {
+  const [locality, region] = String(s.city).split(/\s*[-–]\s*/);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Store',
+    name: s.name,
+    description: 'Loja de produtos naturais: orgânicos, chás e ervas, alimentos a granel e suplementação.',
+    image: 'https://www.nutraprodutosnaturais.com.br/og-image.jpg',
+    url: 'https://www.nutraprodutosnaturais.com.br/',
+    telephone: '+' + s.whatsapp,
+    priceRange: '$$',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: s.address,
+      addressLocality: locality || s.city,
+      addressRegion: region || '',
+      postalCode: s.cep,
+      addressCountry: 'BR',
+    },
+    openingHoursSpecification: [{
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      opens: '08:00',
+      closes: '18:00',
+    }],
+    sameAs: [s.instagram],
+  };
+}
+
+function renderIndex(req, res, next) {
+  try {
+    if (indexTemplate === null) indexTemplate = fs.readFileSync(INDEX_PATH, 'utf8');
+    const pub = configPublica();
+    const tokens = {
+      STORE_NAME: escHtml(pub.name),
+      STORE_WHATSAPP: escHtml(pub.whatsapp),
+      STORE_ADDRESS: escHtml(pub.address),
+      STORE_CITY: escHtml(pub.city),
+      STORE_CEP: escHtml(pub.cep),
+      STORE_HOURS: escHtml(pub.hours),
+      INSTAGRAM_URL: escHtml(pub.instagram),
+      JSONLD: jsonParaScript(montarJsonLd(config.store)),
+      CONFIG_JSON: jsonParaScript(pub),
+    };
+    const html = indexTemplate.replace(/\{\{(\w+)\}\}/g, (m, k) => (
+      Object.prototype.hasOwnProperty.call(tokens, k) ? tokens[k] : m
+    ));
+    res.type('html').send(html);
+  } catch (err) {
+    next(err);
+  }
+}
+
 // ── Frontend estático ──
 if (config.serveStatic) {
   if (fs.existsSync(config.adminDir)) {
     app.use('/admin', express.static(config.adminDir));
   }
   if (fs.existsSync(config.siteDir)) {
-    app.use('/', express.static(config.siteDir));
+    // index.html passa pela injeção; demais assets pelo static (sem servir index).
+    app.get(['/', '/index.html'], renderIndex);
+    app.use('/', express.static(config.siteDir, { index: false }));
   }
 }
 

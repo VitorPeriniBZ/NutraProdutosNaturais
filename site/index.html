@@ -29,46 +29,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
 <!-- Dados estruturados para SEO local (aparece com endereço/horário no Google) -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Store",
-  "name": "Nutra Produtos Naturais",
-  "description": "Loja de produtos naturais: orgânicos, chás e ervas, alimentos a granel e suplementação.",
-  "image": "https://www.nutraprodutosnaturais.com.br/og-image.jpg",
-  "url": "https://www.nutraprodutosnaturais.com.br/",
-  "telephone": "+55-27-99660-0444",
-  "priceRange": "$$",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "Av. Saturnino Rangel Mauro, 1947 - Praia de Itaparica",
-    "addressLocality": "Vila Velha",
-    "addressRegion": "ES",
-    "postalCode": "",
-    "addressCountry": "BR"
-  },
-  "openingHoursSpecification": [{
-    "@type": "OpeningHoursSpecification",
-    "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
-    "opens": "08:00",
-    "closes": "18:00"
-  }],
-  "sameAs": [
-    "https://instagram.com/nutraprodutosnaturais"
-  ]
-}
-</script>
+<!-- JSON-LD injetado pelo servidor a partir de config.store (ver server.js) -->
+<script type="application/ld+json">{{JSONLD}}</script>
 <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
 
 <!-- FLOATING INSTAGRAM -->
-<a href="https://instagram.com/nutraprodutosnaturais" target="_blank" class="float-ig" aria-label="Instagram da Nutra" style="position:fixed;bottom:98px;right:28px;z-index:500;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(220,39,67,0.4);cursor:pointer;text-decoration:none;transition:transform 0.2s;">
+<a href="{{INSTAGRAM_URL}}" target="_blank" class="float-ig" aria-label="Instagram da Nutra" style="position:fixed;bottom:98px;right:28px;z-index:500;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(220,39,67,0.4);cursor:pointer;text-decoration:none;transition:transform 0.2s;">
   <svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
 </a>
 
 <!-- FLOATING WA -->
-<a href="https://wa.me/5527996600444?text=Olá!%20Vi%20o%20site%20da%20Nutra%20e%20quero%20conhecer%20os%20produtos%20🌿" target="_blank" class="float-wa" aria-label="Fale conosco no WhatsApp">
+<a href="https://wa.me/{{STORE_WHATSAPP}}?text=Olá!%20Vi%20o%20site%20da%20Nutra%20e%20quero%20conhecer%20os%20produtos%20🌿" target="_blank" class="float-wa" aria-label="Fale conosco no WhatsApp">
   <span class="float-wa-tooltip">Fale conosco!</span>
   <svg aria-hidden="true" focusable="false" width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
 </a>
@@ -84,7 +57,7 @@
         <a href="#produtos">Produtos</a>
         <a href="#sobre">Sobre nós</a>
         <a href="#catalogo">Catálogo</a>
-        <a href="https://instagram.com/nutraprodutosnaturais" target="_blank" style="display:flex;align-items:center;gap:5px;">
+        <a href="{{INSTAGRAM_URL}}" target="_blank" style="display:flex;align-items:center;gap:5px;">
           <svg aria-hidden="true" focusable="false" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
           Instagram
         </a>
@@ -92,7 +65,7 @@
       <button class="hamburger" id="hamburgerBtn" aria-label="Menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
-      <a href="https://wa.me/5527996600444" target="_blank" class="nav-cta" style="text-decoration:none">
+      <a href="https://wa.me/{{STORE_WHATSAPP}}" target="_blank" class="nav-cta" style="text-decoration:none">
         <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Falar no WhatsApp
       </a>
@@ -107,11 +80,11 @@
   <a href="#produtos">⭐ Destaques</a>
   <a href="#sobre">🏪 Sobre nós</a>
   
-  <a href="https://instagram.com/nutraprodutosnaturais" target="_blank">
+  <a href="{{INSTAGRAM_URL}}" target="_blank">
     <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
     @nutraprodutosnaturais
   </a>
-  <a href="https://wa.me/5527996600444?text=Olá!%20Vi%20o%20site%20da%20Nutra%20e%20quero%20ver%20os%20produtos%20🌿" target="_blank" class="drawer-wa">
+  <a href="https://wa.me/{{STORE_WHATSAPP}}?text=Olá!%20Vi%20o%20site%20da%20Nutra%20e%20quero%20ver%20os%20produtos%20🌿" target="_blank" class="drawer-wa">
     <svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     Falar no WhatsApp
   </a>
@@ -143,7 +116,7 @@
       Produtos orgânicos, chás, alimentos a granel e suplementação para quem faz da saúde um estilo de vida.
     </p>
     <div class="hero-btns reveal reveal-d3">
-      <a href="https://wa.me/5527996600444?text=Olá!%20Vi%20o%20site%20da%20Nutra%20e%20quero%20ver%20os%20produtos%20🌿" target="_blank" class="btn-wa">
+      <a href="https://wa.me/{{STORE_WHATSAPP}}?text=Olá!%20Vi%20o%20site%20da%20Nutra%20e%20quero%20ver%20os%20produtos%20🌿" target="_blank" class="btn-wa">
         <svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Ver produtos pelo WhatsApp
       </a>
@@ -220,7 +193,7 @@
       <p class="section-sub">Do granel ao suplemento, temos tudo para a sua jornada de bem-estar.</p>
     </div>
     <div class="cats-grid">
-      <a href="https://wa.me/5527996600444?text=Quero%20ver%20os%20produtos%20orgânicos%20e%20a%20granel%20🌾" target="_blank" class="cat-card reveal reveal-d1">
+      <a href="https://wa.me/{{STORE_WHATSAPP}}?text=Quero%20ver%20os%20produtos%20orgânicos%20e%20a%20granel%20🌾" target="_blank" class="cat-card reveal reveal-d1">
         <div class="cat-bg cat-bg-1">
           <svg aria-hidden="true" focusable="false" class="cat-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Wheat / grain stalk -->
@@ -245,7 +218,7 @@
           <div class="cat-link">Pedir pelo WhatsApp <span>→</span></div>
         </div>
       </a>
-      <a href="https://wa.me/5527996600444?text=Quero%20ver%20os%20chás%20e%20ervas%20🍃" target="_blank" class="cat-card reveal reveal-d2">
+      <a href="https://wa.me/{{STORE_WHATSAPP}}?text=Quero%20ver%20os%20chás%20e%20ervas%20🍃" target="_blank" class="cat-card reveal reveal-d2">
         <div class="cat-bg cat-bg-2">
           <svg aria-hidden="true" focusable="false" class="cat-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Cup body -->
@@ -267,7 +240,7 @@
           <div class="cat-link">Pedir pelo WhatsApp <span>→</span></div>
         </div>
       </a>
-      <a href="https://wa.me/5527996600444?text=Quero%20ver%20os%20suplementos%20💪" target="_blank" class="cat-card reveal reveal-d3">
+      <a href="https://wa.me/{{STORE_WHATSAPP}}?text=Quero%20ver%20os%20suplementos%20💪" target="_blank" class="cat-card reveal reveal-d3">
         <div class="cat-bg cat-bg-3">
           <svg aria-hidden="true" focusable="false" class="cat-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Capsule pill big -->
@@ -337,7 +310,8 @@
 </section>
 
 
-<script src="js/config.js"></script>
+<!-- Config da loja injetada pelo servidor (fonte única: .env / config.store) -->
+<script>window.NUTRA_CONFIG = {{CONFIG_JSON}};</script>
 <script src="js/catalogo.js"></script>
 
 <!-- VÍDEO DA LOJA -->
@@ -354,7 +328,7 @@
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
           <a href="https://maps.google.com/?q=Av.+Saturnino+Rangel+Mauro,+1947+Praia+de+Itaparica+Vila+Velha+ES" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:#fff;text-decoration:none;padding:11px 20px;border-radius:50px;font-size:0.85rem;font-weight:500;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">🗺️ Como chegar</a>
-          <a href="https://wa.me/5527996600444?text=Olá!%20Quero%20visitar%20a%20loja%20🌿" target="_blank" class="btn-wa" style="font-size:0.85rem;padding:11px 20px;">
+          <a href="https://wa.me/{{STORE_WHATSAPP}}?text=Olá!%20Quero%20visitar%20a%20loja%20🌿" target="_blank" class="btn-wa" style="font-size:0.85rem;padding:11px 20px;">
             <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
             Falar com a gente
           </a>
@@ -416,7 +390,7 @@
         <span class="section-tag reveal">Para quem é a Nutra?</span>
         <h2 class="section-h2 reveal reveal-d1">Se você busca <br><em>viver melhor</em>,<br>é para você.</h2>
         <p class="section-sub reveal reveal-d2">Nossa loja foi criada para quem leva a saúde a sério — seja por restrição alimentar, por estilo de vida ou por performance.</p>
-        <a href="https://wa.me/5527996600444?text=Quero%20conhecer%20a%20Nutra%20🌿" target="_blank" class="btn-wa reveal reveal-d3" style="display:inline-flex">
+        <a href="https://wa.me/{{STORE_WHATSAPP}}?text=Quero%20conhecer%20a%20Nutra%20🌿" target="_blank" class="btn-wa reveal reveal-d3" style="display:inline-flex">
           <svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Falar com a gente
         </a>
@@ -541,7 +515,7 @@
             </div>
           </div>
         </div>
-        <a href="https://wa.me/5527996600444?text=Olá!%20Quero%20conhecer%20mais%20sobre%20a%20Nutra%20🌿" target="_blank" class="btn-wa dark" style="display:inline-flex">
+        <a href="https://wa.me/{{STORE_WHATSAPP}}?text=Olá!%20Quero%20conhecer%20mais%20sobre%20a%20Nutra%20🌿" target="_blank" class="btn-wa dark" style="display:inline-flex">
           <svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Fale com a gente
         </a>
@@ -558,7 +532,7 @@
       <h2 class="section-h2 reveal reveal-d1">Natureza em<br><em>cada escolha.</em></h2>
       <p class="reveal reveal-d2">Fale com a gente pelo WhatsApp, tire suas dúvidas e encontre os produtos certos para o seu estilo de vida. Atendimento rápido e atencioso.</p>
       <div class="cta-final-btns reveal reveal-d3">
-        <a href="https://wa.me/5527996600444?text=Olá!%20Quero%20ver%20o%20catálogo%20da%20Nutra%20🌿" target="_blank" class="btn-wa" style="font-size:1rem;padding:16px 36px;">
+        <a href="https://wa.me/{{STORE_WHATSAPP}}?text=Olá!%20Quero%20ver%20o%20catálogo%20da%20Nutra%20🌿" target="_blank" class="btn-wa" style="font-size:1rem;padding:16px 36px;">
           <svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Acessar o catálogo completo
         </a>
@@ -592,11 +566,11 @@
     </div>
     <div class="footer-col">
       <h4>Contato</h4>
-      <a href="https://wa.me/5527996600444" target="_blank">WhatsApp</a>
-      <a href="https://instagram.com/nutraprodutosnaturais" target="_blank">@nutraprodutosnaturais</a>
+      <a href="https://wa.me/{{STORE_WHATSAPP}}" target="_blank">WhatsApp</a>
+      <a href="{{INSTAGRAM_URL}}" target="_blank">@nutraprodutosnaturais</a>
       <a href="https://maps.google.com/?q=Av.+Saturnino+Rangel+Mauro,+1947+Vila+Velha+ES" target="_blank">📍 Ver no Mapa</a>
-      <p style="font-size:0.76rem;line-height:1.5;color:rgba(255,255,255,0.62);">Av. Saturnino Rangel Mauro, 1947<br>Praia de Itaparica, Vila Velha – ES</p>
-      <p>Seg–Sáb: 8h–18h</p>
+      <p style="font-size:0.76rem;line-height:1.5;color:rgba(255,255,255,0.62);">{{STORE_ADDRESS}}<br>{{STORE_CITY}}</p>
+      <p>{{STORE_HOURS}}</p>
     </div>
   </div>
   <div class="footer-bottom">

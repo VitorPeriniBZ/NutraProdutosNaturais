@@ -1,5 +1,7 @@
 (function(){
-  var PHONE=(window.NUTRA_CONFIG&&window.NUTRA_CONFIG.whatsapp)||'5527996600444', MIN=100, STEP=50, MAXG=5000, KEY='nutra_cart_v1', cart=[];
+  // Config da loja injetada pelo servidor (window.NUTRA_CONFIG). Fallbacks só por segurança.
+  var CFG=(window.NUTRA_CONFIG||{}), CART=(CFG.cart||{});
+  var PHONE=CFG.whatsapp||'5527996600444', MIN=CART.minGrams||100, STEP=CART.stepGrams||50, MAXG=CART.maxGrams||5000, KEY='nutra_cart_v1', cart=[];
   function load(){ try{var s=localStorage.getItem(KEY);cart=s?JSON.parse(s):[];}catch(e){cart=[];} if(!Array.isArray(cart))cart=[]; }
   function save(){ try{localStorage.setItem(KEY,JSON.stringify(cart));}catch(e){} }
   function find(n){ for(var i=0;i<cart.length;i++) if(cart[i].n===n) return cart[i]; return null; }

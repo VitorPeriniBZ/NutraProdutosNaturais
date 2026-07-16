@@ -76,6 +76,25 @@ const config = {
     step: int(env.GRAMA_STEP, 50),
     max: int(env.GRAMA_MAX, 5000),
   },
+
+  // Dados da loja externalizados (antes "chumbados" no HTML/JS do frontend).
+  // Expostos publicamente via GET /api/config e injetados no index.html no servidor.
+  store: {
+    name: env.STORE_NAME || 'Nutra Produtos Naturais',
+    // Só dígitos — usado em links wa.me/<numero>
+    whatsapp: (env.STORE_WHATSAPP || '5527996600444').replace(/\D/g, ''),
+    address: env.STORE_ADDRESS || 'Av. Saturnino Rangel Mauro, 1947',
+    city: env.STORE_CITY || 'Vila Velha - ES',
+    cep: env.STORE_CEP || '29102-036',
+    hours: env.STORE_HOURS || 'Seg-Sáb: 8h-18h',
+    instagram: env.INSTAGRAM_URL || 'https://instagram.com/nutraprodutosnaturais',
+    // Regras do carrinho (stepper de gramas no frontend)
+    cart: {
+      minGrams: int(env.CART_MIN_GRAMS, 100),
+      stepGrams: int(env.CART_STEP_GRAMS, 50),
+      maxGrams: int(env.CART_MAX_GRAMS, 5000),
+    },
+  },
 };
 
 // Em produção, exige um JWT_SECRET forte definido por env. Sem isso, tokens de

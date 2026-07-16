@@ -45,6 +45,17 @@ services:
       ADMIN_EMAIL: ${ADMIN_EMAIL}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-4}
+      # Dados da loja (externalizados) — passam do .env da raiz para a API
+      STORE_NAME: ${STORE_NAME:-Nutra Produtos Naturais}
+      STORE_WHATSAPP: ${STORE_WHATSAPP:-5527996600444}
+      STORE_ADDRESS: ${STORE_ADDRESS:-}
+      STORE_CITY: ${STORE_CITY:-}
+      STORE_CEP: ${STORE_CEP:-}
+      STORE_HOURS: ${STORE_HOURS:-}
+      INSTAGRAM_URL: ${INSTAGRAM_URL:-}
+      CART_MIN_GRAMS: ${CART_MIN_GRAMS:-100}
+      CART_STEP_GRAMS: ${CART_STEP_GRAMS:-50}
+      CART_MAX_GRAMS: ${CART_MAX_GRAMS:-5000}
     volumes:
       - uploads:/app/api/uploads
     healthcheck:
