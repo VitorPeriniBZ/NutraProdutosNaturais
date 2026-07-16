@@ -128,15 +128,19 @@ app.use((err, req, res, next) => {
   res.status(status).json({ erro: status === 500 ? 'Erro interno' : err.message });
 });
 
-const server = app.listen(config.port, () => {
-  console.log(`[nutra-api] ouvindo em http://localhost:${config.port} (db: ${config.db.client})`);
-});
+// Só abre a porta quando executado diretamente (node src/server.js). Quando
+// importado (ex.: testes com supertest), exporta só o app, sem escutar.
+if (require.main === module) {
+  const server = app.listen(config.port, () => {
+    console.log(`[nutra-api] ouvindo em http://localhost:${config.port} (db: ${config.db.client})`);
+  });
 
-function shutdown() {
-  console.log('\n[nutra-api] encerrando...');
-  server.close(() => process.exit(0));
+  const shutdown = () => {
+    console.log('\n[nutra-api] encerrando...');
+    server.close(() => process.exit(0));
+  };
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
 }
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
 
 module.exports = app;

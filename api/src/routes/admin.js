@@ -3,7 +3,6 @@
 // Categorias: GET/POST /categorias, PUT/DELETE /categorias/:id
 // Upload:     POST /upload-imagem
 const express = require('express');
-const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const multer = require('multer');

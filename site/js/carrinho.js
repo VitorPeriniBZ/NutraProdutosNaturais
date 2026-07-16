@@ -1,5 +1,5 @@
 (function(){
-  var PHONE='5527996600444', MIN=100, STEP=50, MAXG=5000, KEY='nutra_cart_v1', cart=[];
+  var PHONE=(window.NUTRA_CONFIG&&window.NUTRA_CONFIG.whatsapp)||'5527996600444', MIN=100, STEP=50, MAXG=5000, KEY='nutra_cart_v1', cart=[];
   function load(){ try{var s=localStorage.getItem(KEY);cart=s?JSON.parse(s):[];}catch(e){cart=[];} if(!Array.isArray(cart))cart=[]; }
   function save(){ try{localStorage.setItem(KEY,JSON.stringify(cart));}catch(e){} }
   function find(n){ for(var i=0;i<cart.length;i++) if(cart[i].n===n) return cart[i]; return null; }
