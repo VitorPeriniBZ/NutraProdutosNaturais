@@ -10,6 +10,7 @@ const db = require('../db');
 const config = require('../config');
 const { requireAdmin } = require('../middleware/auth');
 const { anexarBadges, definirBadges } = require('../lib/produtoBadges');
+const lojaConfig = require('../lib/lojaConfig');
 
 const router = express.Router();
 
@@ -246,6 +247,48 @@ router.delete('/badges/:id', async (req, res, next) => {
     const r = await db.run('DELETE FROM badges WHERE id = ?', [id]);
     if (!r.affectedRows) return res.status(404).json({ erro: 'Badge não encontrada' });
     res.json({ ok: true });
+  } catch (err) { next(err); }
+});
+
+// ───────────────────────── Configurações da loja ─────────────────────────
+router.get('/config', async (req, res, next) => {
+  try {
+    res.json(await lojaConfig.carregar());
+  } catch (err) { next(err); }
+});
+
+router.put('/config', async (req, res, next) => {
+  try {
+    const b = req.body || {};
+    const cart = b.cart || {};
+    const str = (v, max) => String(v == null ? '' : v).trim().slice(0, max);
+    const posInt = (v, def) => {
+      const n = parseInt(v, 10);
+      return Number.isInteger(n) && n > 0 ? n : def;
+    };
+
+    const whatsapp = String(b.whatsapp || '').replace(/\D/g, '');
+    if (!whatsapp) return res.status(400).json({ erro: 'Informe o WhatsApp (somente números, com DDD).' });
+
+    let minG = posInt(cart.minGrams, 100);
+    let stepG = posInt(cart.stepGrams, 50);
+    let maxG = posInt(cart.maxGrams, 5000);
+    if (maxG < minG) maxG = minG; // sanidade
+
+    const campos = {
+      store_name: str(b.name, 120) || 'Nutra Produtos Naturais',
+      store_whatsapp: whatsapp,
+      store_address: str(b.address, 200),
+      store_city: str(b.city, 120),
+      store_cep: str(b.cep, 20),
+      store_hours: str(b.hours, 120),
+      instagram_url: str(b.instagram, 300),
+      cart_min_grams: minG,
+      cart_step_grams: stepG,
+      cart_max_grams: maxG,
+    };
+    const atualizado = await lojaConfig.salvar(campos);
+    res.json(atualizado);
   } catch (err) { next(err); }
 });
 

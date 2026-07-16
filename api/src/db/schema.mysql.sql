@@ -53,3 +53,10 @@ CREATE TABLE IF NOT EXISTS admins (
   ultimo_login TIMESTAMP NULL,
   criado_em    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Configurações da loja editáveis pelo painel (chave/valor). O .env é só o
+-- valor inicial/fallback; o que estiver aqui tem prioridade.
+CREATE TABLE IF NOT EXISTS config_loja (
+  chave VARCHAR(64) PRIMARY KEY,
+  valor TEXT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
