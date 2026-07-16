@@ -59,28 +59,79 @@
 
   document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
 
+  // ─── Focus trap reutilizável (acessibilidade de modais/drawers) ───
+  // Mantém o Tab preso dentro do container enquanto ele está aberto e
+  // devolve o foco ao elemento anterior ao fechar.
+  function elementosFocaveis(container) {
+    return Array.prototype.slice.call(container.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )).filter(function (el) { return el.offsetParent !== null; });
+  }
+  window.criarFocusTrap = function (container) {
+    let handler = null;
+    let focoAnterior = null;
+    return {
+      ativar: function () {
+        focoAnterior = document.activeElement;
+        const foc = elementosFocaveis(container);
+        if (foc.length) foc[0].focus();
+        handler = function (e) {
+          if (e.key !== 'Tab') return;
+          const f = elementosFocaveis(container);
+          if (!f.length) return;
+          const primeiro = f[0];
+          const ultimo = f[f.length - 1];
+          if (e.shiftKey && document.activeElement === primeiro) { e.preventDefault(); ultimo.focus(); }
+          else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primeiro.focus(); }
+        };
+        document.addEventListener('keydown', handler);
+      },
+      desativar: function () {
+        if (handler) document.removeEventListener('keydown', handler);
+        handler = null;
+        if (focoAnterior && typeof focoAnterior.focus === 'function') focoAnterior.focus();
+      }
+    };
+  };
+
   // ─── Hamburger menu ───
   const btn    = document.getElementById('hamburgerBtn');
   const drawer = document.getElementById('mobileDrawer');
   const body   = document.body;
 
+  // Semântica de diálogo para leitores de tela.
+  drawer.setAttribute('role', 'dialog');
+  drawer.setAttribute('aria-modal', 'true');
+  drawer.setAttribute('aria-label', 'Menu de navegação');
+  const drawerTrap = window.criarFocusTrap(drawer);
+  let drawerAberto = false;
+
   function closeDrawer() {
+    if (!drawerAberto) return;
+    drawerAberto = false;
     btn.classList.remove('open');
     drawer.classList.remove('open');
     btn.setAttribute('aria-expanded', 'false');
     body.style.overflow = '';
+    drawerTrap.desativar();
   }
 
   btn.addEventListener('click', () => {
-    const isOpen = drawer.classList.contains('open');
-    if (isOpen) {
+    if (drawerAberto) {
       closeDrawer();
     } else {
+      drawerAberto = true;
       btn.classList.add('open');
       drawer.classList.add('open');
       btn.setAttribute('aria-expanded', 'true');
       body.style.overflow = 'hidden';
+      drawerTrap.ativar();
     }
+  });
+
+  // Fecha com a tecla Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDrawer();
   });
 
   // Close drawer on link click
