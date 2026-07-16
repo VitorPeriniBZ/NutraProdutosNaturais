@@ -6,6 +6,7 @@ const fs = require('fs');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const config = require('./config');
 
 const produtosRouter = require('./routes/produtos');
@@ -16,13 +17,52 @@ const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1); // atrás do Nginx (VPS) / proxy da hospedagem
 
-// Cabeçalhos de segurança. CSP desligada por padrão para não quebrar o
-// frontend estático inline; o essencial (nosniff, no-referrer, frameguard) fica ativo.
-app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
+// Cabeçalhos de segurança (helmet) com uma CSP sob medida para este frontend:
+// - scripts/estilos inline são permitidos ('unsafe-inline') porque o HTML usa
+//   handlers inline (onclick="") e estilos inline;
+// - imagens: próprio domínio, data: (favicon/preview) e WhatsApp;
+// - fontes do Google Fonts (CSS em googleapis, arquivos em gstatic).
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        // Handlers inline (onclick="…") usados no HTML precisam disto — o
+        // padrão do helmet é 'none', que os bloquearia.
+        scriptSrcAttr: ["'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        imgSrc: ["'self'", 'data:', 'https://*.whatsapp.net'],
+        mediaSrc: ["'self'"],
+        connectSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        frameAncestors: ["'self'"],
+        formAction: ["'self'", 'https://wa.me'],
+        // Removido: em dev via http forçaria o fetch de /api para https e
+        // quebraria. Em produção o HTTPS já é garantido pelo Nginx.
+        upgradeInsecureRequests: null,
+      },
+    },
+    crossOriginEmbedderPolicy: false,
+  })
+);
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// Rate limit global para toda a API: 100 requisições por minuto por IP.
+// (o login tem um limite próprio, mais estrito, em routes/auth.js)
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { erro: 'Muitas requisições. Aguarde um instante e tente novamente.' },
+});
+app.use('/api', apiLimiter);
 
 // CORS só quando o frontend roda em outra origem (não é o padrão deste projeto).
 if (config.corsOrigin) {

@@ -46,16 +46,16 @@ function waLink(nome) {
   return 'https://wa.me/5527996600444?text=' + encodeURIComponent('Oi! Quero pedir: ' + nome + ' 🌿');
 }
 function imgHtml(p) {
-  if (p.img) return '<img src="' + p.img + '" alt="' + p.n + '" loading="lazy">';
-  return '<span class="pcat-img-emoji">' + p.e + '</span><span class="pcat-img-label">foto em breve</span>';
+  if (p.img) return '<img src="' + esc(p.img) + '" alt="' + esc(p.n) + '" loading="lazy" width="400" height="300">';
+  return '<span class="pcat-img-emoji">' + esc(p.e) + '</span><span class="pcat-img-label">foto em breve</span>';
 }
 function renderCard(p) {
   if (p.disp === false) {
     return '<div class="pcat-card pcat-off">'
       + '<div class="pcat-img">' + badgesHtml(p) + imgHtml(p) + '</div>'
       + '<div class="pcat-body">'
-      + '<span class="pcat-tag">' + p.c + '</span>'
-      + '<span class="pcat-name">' + p.n + '</span>'
+      + '<span class="pcat-tag">' + esc(p.c) + '</span>'
+      + '<span class="pcat-name">' + esc(p.n) + '</span>'
       + '<button class="pcat-wa pcat-wa-off" disabled>Indisponível</button>'
       + '</div>'
       + '</div>';
@@ -63,8 +63,8 @@ function renderCard(p) {
   return '<a href="' + waLink(p.n) + '" target="_blank" class="pcat-card">'
     + '<div class="pcat-img">' + badgesHtml(p) + imgHtml(p) + '</div>'
     + '<div class="pcat-body">'
-    + '<span class="pcat-tag">' + p.c + '</span>'
-    + '<span class="pcat-name">' + p.n + '</span>'
+    + '<span class="pcat-tag">' + esc(p.c) + '</span>'
+    + '<span class="pcat-name">' + esc(p.n) + '</span>'
     + '<button class="pcat-wa">' + waIcon() + ' Pedir pelo WhatsApp</button>'
     + '</div>'
     + '</a>';
