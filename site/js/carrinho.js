@@ -53,17 +53,23 @@
   };
 
   var ADD='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>';
+  function badges(p){
+    if(!p.badges||!p.badges.length) return '';
+    return '<div class="pcat-badges">'+p.badges.map(function(b){
+      return '<span class="pcat-badge">'+esc(b.nome)+'</span>';
+    }).join('')+'</div>';
+  }
   window.renderCard=function(p){
     var img = p.img
-      ? '<img src="'+p.img+'" alt="'+esc(p.n)+'" loading="lazy">'
-      : '<span class="pcat-img-emoji">'+p.e+'</span><span class="pcat-img-label">foto em breve</span>';
+      ? '<img src="'+esc(p.img)+'" alt="'+esc(p.n)+'" loading="lazy">'
+      : '<span class="pcat-img-emoji">'+esc(p.e)+'</span><span class="pcat-img-label">foto em breve</span>';
     var off = (p.disp === false);
     var botao = off
       ? '<button type="button" class="pcat-wa pcat-wa-off" disabled>Indisponível</button>'
       : '<button type="button" class="pcat-wa">'+ADD+' Adicionar</button>';
     return '<div class="pcat-card'+(off?' pcat-off':'')+'"'+(off?' data-off="1"':'')+'>'
-      +'<div class="pcat-img">'+img+'</div>'
-      +'<div class="pcat-body"><span class="pcat-tag">'+p.c+'</span><span class="pcat-name">'+p.n+'</span>'
+      +'<div class="pcat-img">'+badges(p)+img+'</div>'
+      +'<div class="pcat-body"><span class="pcat-tag">'+esc(p.c)+'</span><span class="pcat-name">'+esc(p.n)+'</span>'
       +botao+'</div></div>';
   };
 
@@ -90,6 +96,7 @@
   // Exposto para o catalogo.js re-vincular após carregar os produtos da API
   // (idempotente: o guard dataset.nutraWired evita listeners duplicados).
   window.wireCatalog = wireCatalog;
+  window.wireFeatured = wireFeatured;
   function init(){ load(); if(typeof render==='function'){try{render();}catch(e){}} wireCatalog(); wireFeatured(); renderCart(); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
   window.addEventListener('load',function(){ if(typeof render==='function'){try{render();}catch(e){}} wireCatalog(); wireFeatured(); });

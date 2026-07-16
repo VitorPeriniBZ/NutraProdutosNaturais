@@ -10,6 +10,7 @@ const multer = require('multer');
 const db = require('../db');
 const config = require('../config');
 const { requireAdmin } = require('../middleware/auth');
+const { anexarBadges, definirBadges } = require('../lib/produtoBadges');
 
 const router = express.Router();
 
@@ -39,9 +40,11 @@ function dadosProduto(body) {
     categoria_id: toIntOrNull(body.categoria_id),
     emoji: (body.emoji ? String(body.emoji).trim() : null) || null,
     imagem_url: (body.imagem_url ? String(body.imagem_url).trim() : null) || null,
+    descricao: (body.descricao ? String(body.descricao).trim().slice(0, 500) : null) || null,
     preco: toNumOrNull(body.preco),
     ativo: toBool01(body.ativo, 1),
     disponivel: toBool01(body.disponivel, 1),
+    destaque: toBool01(body.destaque, 0),
     ordem: toIntOrNull(body.ordem) ?? 0,
     grama_min: toIntOrNull(body.grama_min),
     grama_step: toIntOrNull(body.grama_step),
@@ -56,7 +59,9 @@ async function buscarProduto(id) {
       WHERE p.id = ?`,
     [id]
   );
-  return rows[0] || null;
+  if (!rows[0]) return null;
+  await anexarBadges(rows);
+  return rows[0];
 }
 
 // ───────────────────────── Produtos ─────────────────────────
@@ -81,6 +86,7 @@ router.get('/produtos', async (req, res, next) => {
          ORDER BY p.ordem ASC, p.id ASC`,
       params
     );
+    await anexarBadges(itens);
     res.json({ total: itens.length, itens });
   } catch (err) { next(err); }
 });
@@ -90,10 +96,11 @@ router.post('/produtos', async (req, res, next) => {
     const d = dadosProduto(req.body);
     if (!d.nome) return res.status(400).json({ erro: 'O nome do produto é obrigatório' });
     const r = await db.run(
-      `INSERT INTO produtos (nome, categoria_id, emoji, imagem_url, preco, ativo, disponivel, ordem, grama_min, grama_step, grama_max)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [d.nome, d.categoria_id, d.emoji, d.imagem_url, d.preco, d.ativo, d.disponivel, d.ordem, d.grama_min, d.grama_step, d.grama_max]
+      `INSERT INTO produtos (nome, categoria_id, emoji, imagem_url, descricao, preco, ativo, disponivel, destaque, ordem, grama_min, grama_step, grama_max)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [d.nome, d.categoria_id, d.emoji, d.imagem_url, d.descricao, d.preco, d.ativo, d.disponivel, d.destaque, d.ordem, d.grama_min, d.grama_step, d.grama_max]
     );
+    await definirBadges(r.insertId, req.body.badge_ids);
     res.status(201).json(await buscarProduto(r.insertId));
   } catch (err) { next(err); }
 });
@@ -107,11 +114,12 @@ router.put('/produtos/:id', async (req, res, next) => {
     const d = dadosProduto(req.body);
     if (!d.nome) return res.status(400).json({ erro: 'O nome do produto é obrigatório' });
     await db.run(
-      `UPDATE produtos SET nome=?, categoria_id=?, emoji=?, imagem_url=?, preco=?, ativo=?, disponivel=?, ordem=?,
+      `UPDATE produtos SET nome=?, categoria_id=?, emoji=?, imagem_url=?, descricao=?, preco=?, ativo=?, disponivel=?, destaque=?, ordem=?,
               grama_min=?, grama_step=?, grama_max=?, atualizado_em=CURRENT_TIMESTAMP
         WHERE id=?`,
-      [d.nome, d.categoria_id, d.emoji, d.imagem_url, d.preco, d.ativo, d.disponivel, d.ordem, d.grama_min, d.grama_step, d.grama_max, id]
+      [d.nome, d.categoria_id, d.emoji, d.imagem_url, d.descricao, d.preco, d.ativo, d.disponivel, d.destaque, d.ordem, d.grama_min, d.grama_step, d.grama_max, id]
     );
+    if (req.body.badge_ids !== undefined) await definirBadges(id, req.body.badge_ids);
     res.json(await buscarProduto(id));
   } catch (err) { next(err); }
 });
@@ -183,6 +191,61 @@ router.delete('/categorias/:id', async (req, res, next) => {
     }
     const r = await db.run('DELETE FROM categorias WHERE id = ?', [id]);
     if (!r.affectedRows) return res.status(404).json({ erro: 'Categoria não encontrada' });
+    res.json({ ok: true });
+  } catch (err) { next(err); }
+});
+
+// ───────────────────────── Badges ─────────────────────────
+router.get('/badges', async (req, res, next) => {
+  try {
+    const rows = await db.query(
+      `SELECT b.id, b.nome, b.ordem, COUNT(pb.produto_id) AS total
+         FROM badges b
+         LEFT JOIN produto_badges pb ON pb.badge_id = b.id
+         GROUP BY b.id, b.nome, b.ordem
+         ORDER BY b.ordem ASC, b.nome ASC`,
+      []
+    );
+    res.json(rows.map((r) => ({ ...r, total: Number(r.total) })));
+  } catch (err) { next(err); }
+});
+
+router.post('/badges', async (req, res, next) => {
+  try {
+    const nome = String(req.body.nome || '').trim().slice(0, 80);
+    if (!nome) return res.status(400).json({ erro: 'O nome da badge é obrigatório' });
+    const ordem = toIntOrNull(req.body.ordem) ?? 0;
+    const dup = await db.query('SELECT id FROM badges WHERE nome = ?', [nome]);
+    if (dup.length) return res.status(409).json({ erro: 'Já existe uma badge com esse nome' });
+    const r = await db.run('INSERT INTO badges (nome, ordem) VALUES (?, ?)', [nome, ordem]);
+    const rows = await db.query('SELECT * FROM badges WHERE id = ?', [r.insertId]);
+    res.status(201).json(rows[0]);
+  } catch (err) { next(err); }
+});
+
+router.put('/badges/:id', async (req, res, next) => {
+  try {
+    const id = toIntOrNull(req.params.id);
+    if (!id) return res.status(400).json({ erro: 'ID inválido' });
+    const nome = String(req.body.nome || '').trim().slice(0, 80);
+    if (!nome) return res.status(400).json({ erro: 'O nome da badge é obrigatório' });
+    const ordem = toIntOrNull(req.body.ordem) ?? 0;
+    const dup = await db.query('SELECT id FROM badges WHERE nome = ? AND id <> ?', [nome, id]);
+    if (dup.length) return res.status(409).json({ erro: 'Já existe outra badge com esse nome' });
+    const r = await db.run('UPDATE badges SET nome=?, ordem=? WHERE id=?', [nome, ordem, id]);
+    if (!r.affectedRows) return res.status(404).json({ erro: 'Badge não encontrada' });
+    const rows = await db.query('SELECT * FROM badges WHERE id = ?', [id]);
+    res.json(rows[0]);
+  } catch (err) { next(err); }
+});
+
+router.delete('/badges/:id', async (req, res, next) => {
+  try {
+    const id = toIntOrNull(req.params.id);
+    if (!id) return res.status(400).json({ erro: 'ID inválido' });
+    // A relação em produto_badges é removida em cascata (ON DELETE CASCADE).
+    const r = await db.run('DELETE FROM badges WHERE id = ?', [id]);
+    if (!r.affectedRows) return res.status(404).json({ erro: 'Badge não encontrada' });
     res.json({ ok: true });
   } catch (err) { next(err); }
 });

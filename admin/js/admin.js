@@ -3,6 +3,7 @@
   'use strict';
 
   var categoriasCache = [];
+  var badgesCache = [];
 
   // ───────── Helpers de API ─────────
   function api(method, path, body) {
@@ -286,6 +287,7 @@
     document.getElementById('pNome').value = p ? p.nome : '';
     document.getElementById('pCategoria').value = p && p.categoria_id ? p.categoria_id : '';
     document.getElementById('pEmoji').value = p && p.emoji ? p.emoji : '';
+    document.getElementById('pDescricao').value = p && p.descricao ? p.descricao : '';
     document.getElementById('pImagemUrl').value = p && p.imagem_url ? p.imagem_url : '';
     document.getElementById('pImagem').value = '';
     document.getElementById('pPreco').value = p && p.preco != null ? String(p.preco).replace('.', ',') : '';
@@ -295,6 +297,8 @@
     document.getElementById('pGramaMax').value = p && p.grama_max != null ? p.grama_max : '';
     document.getElementById('pAtivo').checked = p ? !!p.ativo : true;
     document.getElementById('pDisponivel').checked = p ? !!p.disponivel : true;
+    document.getElementById('pDestaque').checked = p ? !!p.destaque : false;
+    renderBadgePicker(p ? p.badges : []);
     setPreview(document.getElementById('pImagemUrl').value);
     document.getElementById('modalProdutoTitulo').textContent = p ? 'Editar produto' : 'Novo produto';
     abrir('modalProduto');
@@ -305,10 +309,14 @@
   document.getElementById('formProduto').addEventListener('submit', function (e) {
     e.preventDefault();
     var id = document.getElementById('pId').value;
+    var badgeIds = Array.prototype.slice
+      .call(document.querySelectorAll('#pBadges input[type="checkbox"]:checked'))
+      .map(function (cb) { return parseInt(cb.value, 10); });
     var payload = {
       nome: document.getElementById('pNome').value.trim(),
       categoria_id: document.getElementById('pCategoria').value || null,
       emoji: document.getElementById('pEmoji').value.trim(),
+      descricao: document.getElementById('pDescricao').value.trim(),
       imagem_url: document.getElementById('pImagemUrl').value || null,
       preco: document.getElementById('pPreco').value.trim(),
       ordem: document.getElementById('pOrdem').value || 0,
@@ -317,6 +325,8 @@
       grama_max: document.getElementById('pGramaMax').value,
       ativo: document.getElementById('pAtivo').checked,
       disponivel: document.getElementById('pDisponivel').checked,
+      destaque: document.getElementById('pDestaque').checked,
+      badge_ids: badgeIds,
     };
     var btn = document.getElementById('btnSalvarProduto');
     btn.disabled = true;
@@ -324,7 +334,7 @@
     req.then(function () {
       fechar('modalProduto');
       toast('Produto salvo 🌿');
-      return Promise.all([carregarProdutos(), carregarCategorias()]);
+      return Promise.all([carregarProdutos(), carregarCategorias(), carregarBadges()]);
     }).catch(function (err) { toast(err.message, 'erro'); })
       .finally(function () { btn.disabled = false; });
   });
@@ -346,6 +356,103 @@
     }
   });
 
+  // ───────── Badges ─────────
+  function carregarBadges() {
+    return api('GET', '/api/admin/badges').then(function (badges) {
+      badgesCache = badges;
+      renderBadges(badges);
+    });
+  }
+
+  function renderBadges(badges) {
+    document.getElementById('badgeCarregando').style.display = 'none';
+    document.getElementById('badgeVazio').style.display = badges.length ? 'none' : 'block';
+    var tbody = document.getElementById('badgeTbody');
+    var cards = document.getElementById('badgeCards');
+
+    tbody.innerHTML = badges.map(function (b) {
+      return '<tr>'
+        + '<td><span class="badge-chip">' + esc(b.nome) + '</span></td>'
+        + '<td>' + b.total + ' produto(s)</td>'
+        + '<td>' + b.ordem + '</td>'
+        + '<td><div class="acoes">'
+        + '<button class="btn btn-ghost btn-sm" data-editar-badge="' + b.id + '">Editar</button>'
+        + '<button class="btn btn-danger btn-sm" data-excluir-badge="' + b.id + '">Excluir</button>'
+        + '</div></td></tr>';
+    }).join('');
+
+    cards.innerHTML = badges.map(function (b) {
+      return '<div class="prod-card">'
+        + '<div class="info"><div class="nome"><span class="badge-chip">' + esc(b.nome) + '</span></div>'
+        + '<div class="meta"><span>' + b.total + ' produto(s)</span><span>ordem ' + b.ordem + '</span></div></div>'
+        + '<div class="acoes">'
+        + '<button class="btn btn-ghost btn-sm" data-editar-badge="' + b.id + '">Editar</button>'
+        + '<button class="btn btn-danger btn-sm" data-excluir-badge="' + b.id + '">Excluir</button>'
+        + '</div></div>';
+    }).join('');
+  }
+
+  function abrirBadge(badge) {
+    document.getElementById('formBadge').reset();
+    document.getElementById('bId').value = badge ? badge.id : '';
+    document.getElementById('bNome').value = badge ? badge.nome : '';
+    document.getElementById('bOrdem').value = badge ? badge.ordem : 0;
+    document.getElementById('modalBadgeTitulo').textContent = badge ? 'Editar badge' : 'Nova badge';
+    abrir('modalBadge');
+  }
+
+  document.getElementById('btnNovaBadge').addEventListener('click', function () { abrirBadge(null); });
+
+  document.getElementById('formBadge').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var id = document.getElementById('bId').value;
+    var payload = {
+      nome: document.getElementById('bNome').value.trim(),
+      ordem: document.getElementById('bOrdem').value,
+    };
+    var btn = document.getElementById('btnSalvarBadge');
+    btn.disabled = true;
+    var req = id ? api('PUT', '/api/admin/badges/' + id, payload) : api('POST', '/api/admin/badges', payload);
+    req.then(function () {
+      fechar('modalBadge');
+      toast('Badge salva 🌿');
+      return carregarBadges();
+    }).catch(function (err) { toast(err.message, 'erro'); })
+      .finally(function () { btn.disabled = false; });
+  });
+
+  document.getElementById('painel-badges').addEventListener('click', function (e) {
+    var ed = e.target.closest('[data-editar-badge]');
+    var ex = e.target.closest('[data-excluir-badge]');
+    if (ed) {
+      var b = badgesCache.find(function (x) { return String(x.id) === ed.dataset.editarBadge; });
+      abrirBadge(b);
+    } else if (ex) {
+      var b2 = badgesCache.find(function (x) { return String(x.id) === ex.dataset.excluirBadge; });
+      if (confirm('Excluir a badge "' + (b2 ? b2.nome : '') + '"? Ela será removida de todos os produtos.')) {
+        api('DELETE', '/api/admin/badges/' + ex.dataset.excluirBadge)
+          .then(function () { toast('Badge excluída'); return Promise.all([carregarBadges(), carregarProdutos()]); })
+          .catch(function (err) { toast(err.message, 'erro'); });
+      }
+    }
+  });
+
+  // Monta os checkboxes de badges no formulário de produto, marcando as selecionadas.
+  function renderBadgePicker(selecionadas) {
+    var wrap = document.getElementById('pBadges');
+    var ids = (selecionadas || []).map(function (b) { return b.id; });
+    if (!badgesCache.length) {
+      wrap.innerHTML = '<span class="badge-picker-vazio">Nenhuma badge cadastrada. Crie na aba “Badges”.</span>';
+      return;
+    }
+    wrap.innerHTML = badgesCache.map(function (b) {
+      var marcada = ids.indexOf(b.id) > -1 ? ' checked' : '';
+      return '<label class="badge-opt">'
+        + '<input type="checkbox" value="' + b.id + '"' + marcada + '>'
+        + '<span>' + esc(b.nome) + '</span></label>';
+    }).join('');
+  }
+
   // ───────── Início ─────────
-  carregarCategorias().then(carregarProdutos);
+  Promise.all([carregarCategorias(), carregarBadges()]).then(carregarProdutos);
 })();

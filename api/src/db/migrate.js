@@ -34,6 +34,8 @@ async function main() {
 
   // Migrações aditivas para bancos criados antes de novas colunas existirem
   await garantirColuna('produtos', 'disponivel', 'INTEGER NOT NULL DEFAULT 1', 'TINYINT(1) NOT NULL DEFAULT 1');
+  await garantirColuna('produtos', 'descricao', 'TEXT', 'VARCHAR(500)');
+  await garantirColuna('produtos', 'destaque', 'INTEGER NOT NULL DEFAULT 0', 'TINYINT(1) NOT NULL DEFAULT 0');
 
   console.log('[migrate] tabelas criadas/verificadas com sucesso.');
   await db.close();

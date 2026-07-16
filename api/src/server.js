@@ -10,6 +10,7 @@ const config = require('./config');
 
 const produtosRouter = require('./routes/produtos');
 const categoriasRouter = require('./routes/categorias');
+const badgesRouter = require('./routes/badges');
 
 const app = express();
 app.disable('x-powered-by');
@@ -41,6 +42,7 @@ app.get('/api/health', (req, res) => res.json({ ok: true, db: config.db.client }
 // ── Rotas públicas ──
 app.use('/api/produtos', produtosRouter);
 app.use('/api/categorias', categoriasRouter);
+app.use('/api/badges', badgesRouter);
 
 // ── Rotas de autenticação e admin (Fase 2 — montadas se os arquivos existirem) ──
 for (const [rota, arquivo] of [

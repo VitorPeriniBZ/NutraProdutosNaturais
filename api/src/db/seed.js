@@ -59,6 +59,21 @@ async function seedProdutos(mapa, prods) {
   console.log(`[seed] ${prods.length} produtos inseridos.`);
 }
 
+// Badges iniciais — os mesmos selos que já apareciam fixos no site.
+const BADGES_INICIAIS = ['Sem Açúcar', 'Vegano', 'Orgânico', 'Sem Glúten', 'Sem Lactose', 'Natural'];
+
+async function seedBadges() {
+  let i = 0;
+  for (const nome of BADGES_INICIAIS) {
+    i += 1;
+    const existente = await db.query('SELECT id FROM badges WHERE nome = ?', [nome]);
+    if (!existente.length) {
+      await db.run('INSERT INTO badges (nome, ordem) VALUES (?, ?)', [nome, i]);
+    }
+  }
+  console.log(`[seed] ${BADGES_INICIAIS.length} badges garantidas.`);
+}
+
 async function seedAdmin() {
   if (!config.admin.email || !config.admin.senha) {
     console.log('[seed] ADMIN_EMAIL/ADMIN_PASSWORD não definidos — admin não criado (defina no .env para o painel).');
@@ -83,6 +98,7 @@ async function main() {
   const { mapa, prods } = await seedCategorias();
   console.log(`[seed] ${Object.keys(mapa).length} categorias garantidas.`);
   await seedProdutos(mapa, prods);
+  await seedBadges();
   await seedAdmin();
   await db.close();
   console.log('[seed] concluído.');

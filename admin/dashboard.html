@@ -27,6 +27,7 @@
   <div class="tabs">
     <button class="tab ativo" data-painel="produtos">Produtos</button>
     <button class="tab" data-painel="categorias">Categorias</button>
+    <button class="tab" data-painel="badges">Badges</button>
   </div>
 
   <!-- ── PRODUTOS ── -->
@@ -80,6 +81,26 @@
       <div class="vazio" id="catVazio" style="display:none;">Nenhuma categoria ainda.</div>
     </div>
   </section>
+
+  <!-- ── BADGES ── -->
+  <section class="painel" id="painel-badges">
+    <div class="toolbar">
+      <p class="painel-dica">Selos exibidos nos produtos (ex.: Vegano, Orgânico, Sem Glúten). Atribua-os a cada produto na aba Produtos.</p>
+      <span class="spacer"></span>
+      <button class="btn btn-primary" id="btnNovaBadge">+ Nova badge</button>
+    </div>
+    <div class="tabela-wrap">
+      <table class="grid" id="badgeTabela">
+        <thead>
+          <tr><th>Nome</th><th>Produtos</th><th>Ordem</th><th></th></tr>
+        </thead>
+        <tbody id="badgeTbody"></tbody>
+      </table>
+      <div class="card-lista" id="badgeCards"></div>
+      <div class="carregando" id="badgeCarregando">Carregando...</div>
+      <div class="vazio" id="badgeVazio" style="display:none;">Nenhuma badge ainda.</div>
+    </div>
+  </section>
 </main>
 
 <!-- ── Modal Produto ── -->
@@ -115,6 +136,14 @@
           </div>
           <input type="hidden" id="pImagemUrl">
         </div>
+        <div class="campo">
+          <label for="pDescricao">Descrição (usada na seção de destaques)</label>
+          <textarea id="pDescricao" rows="2" maxlength="500" placeholder="Ex.: 100% natural, sem açúcar e sem conservantes."></textarea>
+        </div>
+        <div class="campo">
+          <label>Badges</label>
+          <div class="badge-picker" id="pBadges"></div>
+        </div>
         <div class="campo-linha">
           <div class="campo">
             <label for="pPreco">Preço (opcional, não exibido no site)</label>
@@ -145,6 +174,13 @@
             <input type="checkbox" id="pDisponivel" checked>
             <span class="track"></span>
             <span>Disponível para compra (se desligado, aparece como “Indisponível”)</span>
+          </label>
+        </div>
+        <div class="campo">
+          <label class="switch">
+            <input type="checkbox" id="pDestaque">
+            <span class="track"></span>
+            <span>Destacar na home (seção “Produtos em destaque”)</span>
           </label>
         </div>
       </div>
@@ -184,6 +220,35 @@
       <div class="modal-foot">
         <button type="button" class="btn btn-ghost" data-fechar>Cancelar</button>
         <button type="submit" class="btn btn-primary" id="btnSalvarCategoria">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Modal Badge ── -->
+<div class="modal-overlay" id="modalBadge">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalBadgeTitulo">Nova badge</h2>
+      <button class="modal-close" data-fechar>&times;</button>
+    </div>
+    <form id="formBadge">
+      <div class="modal-body">
+        <input type="hidden" id="bId">
+        <div class="campo-linha">
+          <div class="campo">
+            <label for="bNome">Nome *</label>
+            <input type="text" id="bNome" required maxlength="80" placeholder="ex.: Vegano">
+          </div>
+          <div class="campo">
+            <label for="bOrdem">Ordem</label>
+            <input type="number" id="bOrdem" value="0">
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" data-fechar>Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btnSalvarBadge">Salvar</button>
       </div>
     </form>
   </div>
