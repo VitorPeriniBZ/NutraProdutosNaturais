@@ -13,6 +13,7 @@ router.get('/', async (req, res, next) => {
     const categoria = (req.query.categoria || '').trim();
     const busca = (req.query.busca || '').trim().toLowerCase();
     const soDestaque = /^(1|true|yes|on)$/i.test(String(req.query.destaque || ''));
+    const badgeId = parseInt(req.query.badge, 10);
     const pagina = Math.max(1, parseInt(req.query.pagina, 10) || 1);
     let porPagina = parseInt(req.query.por_pagina, 10) || 12;
     porPagina = Math.min(Math.max(porPagina, 1), 1000);
@@ -29,6 +30,12 @@ router.get('/', async (req, res, next) => {
       params.push('%' + busca + '%');
     }
     if (soDestaque) where.push('p.destaque = 1');
+    // Filtro por badge (server-side, para funcionar com a paginação): produto
+    // precisa ter o selo informado.
+    if (Number.isInteger(badgeId) && badgeId > 0) {
+      where.push('EXISTS (SELECT 1 FROM produto_badges pb WHERE pb.produto_id = p.id AND pb.badge_id = ?)');
+      params.push(badgeId);
+    }
     const whereSql = 'WHERE ' + where.join(' AND ');
 
     const totalRows = await db.query(

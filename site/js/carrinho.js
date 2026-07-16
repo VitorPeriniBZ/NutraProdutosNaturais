@@ -61,7 +61,7 @@
   }
   window.renderCard=function(p){
     var img = p.img
-      ? '<img src="'+esc(p.img)+'" alt="'+esc(p.n)+'" loading="lazy">'
+      ? '<img src="'+esc(p.img)+'" alt="'+esc(p.n)+'" loading="lazy" width="400" height="300">'
       : '<span class="pcat-img-emoji">'+esc(p.e)+'</span><span class="pcat-img-label">foto em breve</span>';
     var off = (p.disp === false);
     var botao = off
