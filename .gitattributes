@@ -1,0 +1,5 @@
+# Arquivos binários grandes rastreados via Git LFS.
+# (Assumimos que os assets grandes serão movidos para storage externo no futuro;
+#  isto passa a valer para novas alterações desses arquivos.)
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
