@@ -58,7 +58,7 @@ const config = {
   maxUploadMb: int(env.MAX_UPLOAD_MB, 4),
 
   // Autenticação (usada na Fase 2)
-  jwtSecret: env.JWT_SECRET || (env.NODE_ENV === 'production' ? '' : 'dev-secret-inseguro-somente-local'),
+  jwtSecret: env.JWT_SECRET || (env.NODE_ENV === 'production' ? '' : '82f9ff67cae68739e30cfff2a9e1965d3a81e6bafb3e4678036b2691267384a4'),
   jwtExpiraHoras: int(env.JWT_EXPIRA_HORAS, 12),
   cookieSecure: bool(env.COOKIE_SECURE, env.NODE_ENV === 'production'),
   cookieName: env.COOKIE_NAME || 'nutra_admin',
