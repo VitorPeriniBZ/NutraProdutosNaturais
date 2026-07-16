@@ -1,0 +1,7 @@
+# Nutra Produtos Naturais — regras para robôs de busca
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://www.nutraprodutosnaturais.com.br/sitemap.xml
