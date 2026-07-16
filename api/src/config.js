@@ -86,7 +86,7 @@ const config = {
     address: env.STORE_ADDRESS || 'Av. Saturnino Rangel Mauro, 1947',
     city: env.STORE_CITY || 'Vila Velha - ES',
     cep: env.STORE_CEP || '29102-036',
-    hours: env.STORE_HOURS || 'Seg-Sáb: 8h-18h',
+    hours: env.STORE_HOURS || 'Seg a Sex: 9h às 18h · Sáb: 9h às 12h',
     instagram: env.INSTAGRAM_URL || 'https://instagram.com/nutraprodutosnaturais',
     // Regras do carrinho (stepper de gramas no frontend)
     cart: {
