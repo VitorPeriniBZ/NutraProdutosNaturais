@@ -3,6 +3,10 @@
 Site institucional + catálogo com carrinho (fechamento por WhatsApp) e painel
 administrativo para gerenciar os produtos sem editar código.
 
+> **No ar:** https://nutraprodutosnaturais.com.br — HostGator (cPanel), API em
+> PHP, deploy por `git push` + Deploy HEAD Commit.
+> Como atualizar, onde mexer e como fazer rollback: **[DEPLOY-CPANEL.md](DEPLOY-CPANEL.md)**.
+
 ## Estrutura do projeto
 
 ```
@@ -27,6 +31,14 @@ administrativo para gerenciar os produtos sem editar código.
     routes/
       produtos.js     GET /api/produtos  (público)
       categorias.js   GET /api/categorias (público)
+/php                  o que roda em produção na HostGator (API portada para PHP)
+  index.php           renderiza site/index.html injetando WhatsApp, endereço e JSON-LD
+  api.php             front controller de /api/* (mesmas rotas da API Node)
+  .htaccess           DirectoryIndex + rewrite de /api + cabeçalhos de segurança
+  _app/               código da API, bloqueado pela web por .htaccess
+    config.php        credenciais do banco — criado pelo instalador, fora do git
+/ferramentas          instalador web e documentação do pacote PHP (NÃO vão no deploy)
+.cpanel.yml           o que o "Deploy HEAD Commit" do cPanel copia para public_html
 ```
 
 ## Banco de dados: um código, dois bancos
