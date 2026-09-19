@@ -1,0 +1,6 @@
+# Nada dentro de /uploads deve ser executado.
+<FilesMatch "\.(php|phtml|php[0-9]|pl|py|cgi|sh|html?|htaccess)$">
+  Require all denied
+</FilesMatch>
+Options -ExecCGI -Indexes
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .phps
