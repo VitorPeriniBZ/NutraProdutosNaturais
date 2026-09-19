@@ -1,0 +1,40 @@
+# ─────────────────────────────────────────────────────────────
+# Nutra Produtos Naturais — configuração do Apache
+# ─────────────────────────────────────────────────────────────
+
+# index.php assume a home. Se o index.php for apagado, o Apache cai
+# automaticamente no index.html estático (rollback instantâneo).
+DirectoryIndex index.php index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Para forçar HTTPS, descomente as duas linhas abaixo:
+  # RewriteCond %{HTTPS} !=on
+  # RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+  # Toda a API passa pelo front controller.
+  RewriteRule ^api(/.*)?$ api.php [QSA,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript application/json image/svg+xml
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType video/mp4 "access plus 30 days"
+</IfModule>
+
+Options -Indexes
