@@ -11,3 +11,10 @@ api/uploads/
 .idea/
 .vscode/
 .DS_Store
+
+# Produção PHP (cPanel)
+php/_app/config.php
+php/_app/tmp/*.json
+php/_app/tmp/*.log
+php/uploads/*
+!php/uploads/.htaccess

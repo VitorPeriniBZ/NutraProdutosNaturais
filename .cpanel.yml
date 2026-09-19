@@ -1,0 +1,42 @@
+---
+# Deploy automático da HostGator (cPanel → Git Version Control → Deploy HEAD Commit).
+#
+# O que acontece: o cPanel faz o checkout deste repositório em
+# ~/repositories/NutraProdutosNaturais e executa as tarefas abaixo, que copiam
+# os arquivos para dentro do public_html.
+#
+# REGRAS IMPORTANTES
+#   * Só existe cópia (cp). Nada aqui apaga arquivo, então:
+#       - _app/config.php  (credenciais do banco)  nunca é tocado
+#       - uploads/*        (imagens do painel)     nunca é apagado
+#       - _app/tmp/*       (log e rate limit)      nunca é apagado
+#   * O instalador (ferramentas/instalar-b1009c44b5.php) é DE PROPÓSITO
+#     deixado de fora — ele não deve voltar para o ar depois de instalado.
+#   * O template do site e o schema do banco têm uma única fonte de verdade:
+#     site/index.html e api/src/db/. São copiados para dentro de _app/ aqui.
+
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home2/nutraprodutos/public_html
+    - /bin/mkdir -p "$DEPLOYPATH/_app/templates" "$DEPLOYPATH/_app/sql" "$DEPLOYPATH/_app/tmp" "$DEPLOYPATH/uploads"
+
+    # 1. Runtime PHP: index.php, api.php, .htaccess e todo o _app/
+    - /bin/cp -R php/. "$DEPLOYPATH/"
+
+    # 2. Painel administrativo
+    - /bin/cp -R admin "$DEPLOYPATH/"
+
+    # 3. Front-end do site
+    - /bin/cp -R site/css site/js "$DEPLOYPATH/"
+    - /bin/cp -f site/robots.txt site/sitemap.xml "$DEPLOYPATH/"
+    - /bin/cp -f site/logo.png site/logo-claro.png site/loja.jpg site/video-loja.mp4 "$DEPLOYPATH/"
+
+    # 4. Template que o index.php renderiza (mesmo arquivo do site/)
+    - /bin/cp -f site/index.html "$DEPLOYPATH/_app/templates/index.tpl.html"
+
+    # 5. Schema e seed, usados só por uma instalação nova
+    - /bin/cp -f api/src/db/schema.mysql.sql api/src/db/schema.sqlite.sql api/src/db/produtos-seed.json "$DEPLOYPATH/_app/sql/"
+
+    # 6. Site estático antigo — é o rollback: apagar o index.php faz o Apache
+    #    voltar a servir este arquivo na hora.
+    - /bin/cp -f index.html "$DEPLOYPATH/index.html"
