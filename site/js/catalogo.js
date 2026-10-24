@@ -32,6 +32,29 @@ function esc(s) {
   });
 }
 
+// ── Preço ──
+// A unidade do produto diz o que o número significa: '100g' e 'kg' são granel
+// (o carrinho soma por peso), 'un' é peça. Produto sem preço simplesmente não
+// mostra nada — nunca inventa "R$ 0,00".
+function moedaBR(v) {
+  return 'R$ ' + Number(v).toFixed(2).replace('.', ',');
+}
+function sufixoUnidade(un) {
+  if (un === 'un') return ' cada';
+  if (un === 'kg') return ' / kg';
+  return ' / 100g';
+}
+function precoHtml(p) {
+  if (p.preco == null || !(p.preco > 0)) return '';
+  return '<span class="pcat-price">' + esc(moedaBR(p.preco))
+    + '<small>' + esc(sufixoUnidade(p.un)) + '</small></span>';
+}
+// Atributos que o carrinho lê do card ao clicar em "Adicionar".
+function dadosPreco(p) {
+  if (p.preco == null || !(p.preco > 0)) return '';
+  return ' data-preco="' + esc(p.preco) + '" data-un="' + esc(p.un) + '"';
+}
+
 // Converte um item da API no modelo usado pelos cards.
 function mapProduto(p) {
   return {
@@ -39,7 +62,9 @@ function mapProduto(p) {
     disp: (p.disponivel == null) ? true : !!Number(p.disponivel),
     badges: p.badges || [],
     desc: p.descricao || '',
-    destaque: !!Number(p.destaque)
+    destaque: !!Number(p.destaque),
+    preco: (p.preco == null || p.preco === '') ? null : Number(p.preco),
+    un: p.unidade || '100g'
   };
 }
 
@@ -71,15 +96,17 @@ function renderCard(p) {
       + '<div class="pcat-body">'
       + '<span class="pcat-tag">' + esc(p.c) + '</span>'
       + '<span class="pcat-name">' + esc(p.n) + '</span>'
+      + precoHtml(p)
       + '<button class="pcat-wa pcat-wa-off" disabled>Indisponível</button>'
       + '</div>'
       + '</div>';
   }
-  return '<a href="' + waLink(p.n) + '" target="_blank" class="pcat-card">'
+  return '<a href="' + waLink(p.n) + '" target="_blank" class="pcat-card"' + dadosPreco(p) + '>'
     + '<div class="pcat-img">' + badgesHtml(p) + imgHtml(p) + '</div>'
     + '<div class="pcat-body">'
     + '<span class="pcat-tag">' + esc(p.c) + '</span>'
     + '<span class="pcat-name">' + esc(p.n) + '</span>'
+    + precoHtml(p)
     + '<button class="pcat-wa">' + waIcon() + ' Pedir pelo WhatsApp</button>'
     + '</div>'
     + '</a>';
@@ -228,13 +255,17 @@ function destaqueImg(p) {
 function destaqueCard(p, i) {
   var grad = DESTAQUE_GRADS[i % DESTAQUE_GRADS.length];
   var bg = p.img ? '' : (' style="background:' + grad + ';"');
-  return '<div class="pcard">'
+  var dados = (p.preco != null && p.preco > 0)
+    ? ' data-preco="' + esc(p.preco) + '" data-un="' + esc(p.un || '100g') + '"' : '';
+  return '<div class="pcard"' + dados + '>'
     + '<div class="pcard-img"' + bg + '>'
     + badgesHtml(p)
     + destaqueImg(p)
     + '</div>'
     + '<div class="pcard-body">'
     + '<div class="pcard-name">' + esc(p.n) + '</div>'
+    + (p.preco != null && p.preco > 0
+        ? '<div class="pcard-price">' + esc(moedaBR(p.preco)) + '<small>' + esc(sufixoUnidade(p.un)) + '</small></div>' : '')
     + (p.desc ? '<div class="pcard-desc">' + esc(p.desc) + '</div>' : '')
     + '<a href="' + waLink(p.n) + '" target="_blank" class="pcard-cta">' + waIcon() + ' Pedir pelo WhatsApp</a>'
     + '</div>'
