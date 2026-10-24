@@ -207,8 +207,16 @@
         </div>
         <div class="campo-linha">
           <div class="campo">
-            <label for="pPreco">Preço (opcional, não exibido no site)</label>
+            <label for="pPreco">Preço</label>
             <input type="text" id="pPreco" inputmode="decimal" placeholder="ex.: 12,90">
+          </div>
+          <div class="campo">
+            <label for="pUnidade">Vendido por</label>
+            <select id="pUnidade">
+              <option value="100g">A granel — preço por 100g</option>
+              <option value="kg">A granel — preço por quilo</option>
+              <option value="un">Por unidade — preço de cada peça</option>
+            </select>
           </div>
           <div class="campo">
             <label for="pOrdem">Ordem</label>
