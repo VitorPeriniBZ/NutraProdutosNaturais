@@ -78,40 +78,6 @@
       +'<span class="nutra-total-valor">'+moedaBR(t.valor)+'</span>'
       +(t.faltando?'<span class="nutra-total-obs">+ itens sem preço</span>':'');
   }
-  // ── Estilos e elemento do total ──
-  // Ficam aqui, e não no estilo.css / index.html, porque esses dois arquivos
-  // não puderam ser atualizados pelo caminho de publicação disponível. São as
-  // mesmas regras que estariam no CSS; na próxima vez que o estilo.css puder
-  // ser alterado, é só mover este bloco para lá e apagar esta função.
-  function injetarEstilos(){
-    if(document.getElementById('nutra-precos-css')) return;
-    var st=document.createElement('style');
-    st.id='nutra-precos-css';
-    st.textContent=
-      '.pcat-price{font-family:"DM Sans",sans-serif;font-size:1rem;font-weight:500;color:var(--verde-med);line-height:1.2;display:flex;align-items:baseline;gap:4px;flex-wrap:wrap;}'
-     +'.pcat-price small{font-size:.68rem;font-weight:400;color:var(--texto-cl);}'
-     +'.pcat-card.pcat-off .pcat-price{color:var(--texto-cl);}'
-     +'.pcard-price{font-family:"DM Sans",sans-serif;font-size:1.05rem;font-weight:500;color:var(--verde-med);margin-bottom:8px;display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;}'
-     +'.pcard-price small{font-size:.72rem;font-weight:400;color:var(--texto-cl);}'
-     +'.nutra-sub{margin-left:auto;font:500 .9rem "DM Sans",sans-serif;color:var(--verde-med);white-space:nowrap;}'
-     +'.nutra-total{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;justify-content:space-between;padding:0 2px 12px;}'
-     +'.nutra-total:empty{display:none;}'
-     +'.nutra-total-label{font:500 .8rem "DM Sans",sans-serif;text-transform:uppercase;letter-spacing:.06em;color:var(--texto-cl);}'
-     +'.nutra-total-valor{font-family:"Cormorant Garamond",serif;font-size:1.5rem;font-weight:600;color:var(--verde);}'
-     +'.nutra-total-obs{flex-basis:100%;font-size:.72rem;color:var(--texto-cl);}';
-    document.head.appendChild(st);
-  }
-  function garantirTotal(){
-    if(document.getElementById('nutraTotal')) return;
-    var foot=document.querySelector('.nutra-dfoot');
-    if(!foot) return;
-    var el=document.createElement('div');
-    el.className='nutra-total'; el.id='nutraTotal';
-    foot.insertBefore(el, foot.firstChild);
-    var nota=foot.querySelector('.nutra-note');
-    if(nota) nota.textContent='Valores por peso. O peso exato é conferido na loja e a gente confirma tudo pelo WhatsApp 🌿';
-  }
-
   var toastT;
   function toast(txt){
     var el=document.getElementById('nutraToast');
@@ -203,7 +169,6 @@
   function init(){
     var d=document.getElementById('nutraDrawer');
     if(d){ d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label','Carrinho de compras'); }
-    injetarEstilos(); garantirTotal();
     load(); if(typeof render==='function'){try{render();}catch(e){}} wireCatalog(); wireFeatured(); renderCart();
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
