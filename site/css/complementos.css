@@ -1,0 +1,80 @@
+/* complementos.css
+   Extensão do estilo.css. Existe por um motivo prático: o estilo.css passou
+   do tamanho que o caminho de publicação atual (envio pelo navegador)
+   consegue enviar, então as regras novas entram aqui, num arquivo pequeno.
+   Quando houver push direto no repositório, o conteúdo daqui pode ser
+   colado no fim do estilo.css e este arquivo (e o <link> no index.html)
+   podem sumir. Nada aqui depende de ordem de carregamento além de vir
+   depois do estilo.css. */
+
+/* ─── PREÇO NO CATÁLOGO E NOS DESTAQUES ─── */
+.pcat-price {
+  font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
+  color: var(--verde-med); line-height: 1.2;
+  display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap;
+}
+.pcat-price small { font-size: .68rem; font-weight: 400; color: var(--texto-cl); }
+.pcat-card.pcat-off .pcat-price { color: var(--texto-cl); }
+.pcard-price {
+  font-family: 'DM Sans', sans-serif; font-size: 1.05rem; font-weight: 500;
+  color: var(--verde-med); margin-bottom: 8px;
+  display: flex; align-items: baseline; gap: 5px; flex-wrap: wrap;
+}
+.pcard-price small { font-size: .72rem; font-weight: 400; color: var(--texto-cl); }
+
+/* ─── SUBTOTAL E TOTAL DO CARRINHO ─── */
+.nutra-sub {
+  margin-left: auto; font: 500 .9rem 'DM Sans', sans-serif;
+  color: var(--verde-med); white-space: nowrap;
+}
+.nutra-total {
+  display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+  justify-content: space-between; padding: 0 2px 12px;
+}
+.nutra-total:empty { display: none; }
+.nutra-total-label {
+  font: 500 .8rem 'DM Sans', sans-serif; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--texto-cl);
+}
+.nutra-total-valor {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.5rem;
+  font-weight: 600; color: var(--verde);
+}
+.nutra-total-obs { flex-basis: 100%; font-size: .72rem; color: var(--texto-cl); }
+
+/* ─── INFORMATIVO DE ENTREGA DENTRO DO CARRINHO ─── */
+.nutra-entrega-info {
+  display: flex; gap: 9px; align-items: flex-start;
+  background: var(--branco); border: 1px solid var(--bege-esc);
+  border-radius: 12px; padding: 10px 12px; margin-bottom: 12px;
+  font-size: .73rem; line-height: 1.5; color: var(--texto-med); text-align: left;
+}
+.nutra-entrega-info b { color: var(--verde); font-weight: 600; }
+.nutra-entrega-info .ico { flex-shrink: 0; font-size: .95rem; line-height: 1.35; }
+
+/* ─── SEÇÃO DE ENTREGA ─── */
+.entrega { background: var(--branco); }
+.entrega-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.entrega-texto .section-sub { margin-bottom: 26px; }
+.entrega-cards { display: flex; flex-direction: column; gap: 16px; }
+.entrega-card {
+  display: flex; gap: 18px; align-items: flex-start;
+  background: var(--bege); border: 1px solid var(--bege-esc);
+  border-radius: 18px; padding: 22px 24px;
+  transition: transform .3s, box-shadow .3s;
+}
+.entrega-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(45,84,37,.07); }
+.entrega-icone {
+  flex-shrink: 0; width: 46px; height: 46px; border-radius: 13px;
+  background: var(--branco); border: 1px solid var(--bege-esc);
+  display: flex; align-items: center; justify-content: center;
+}
+.entrega-titulo {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600;
+  color: var(--verde); line-height: 1.2; margin-bottom: 5px;
+}
+.entrega-desc { font-size: .86rem; color: var(--texto-med); line-height: 1.55; }
+@media (max-width: 900px) {
+  .entrega-inner { grid-template-columns: 1fr; gap: 34px; }
+  .entrega-texto .section-sub { margin-bottom: 22px; }
+}
