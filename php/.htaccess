@@ -30,11 +30,26 @@ DirectoryIndex index.php index.html
 
 <IfModule mod_expires.c>
   ExpiresActive On
-  ExpiresByType text/css "access plus 7 days"
-  ExpiresByType application/javascript "access plus 7 days"
+  # CSS e JS NÃO ficam guardados por tempo fixo. Eles mudam a cada deploy, e
+  # com cache de dias um cliente que já visitou o site continuaria vendo a
+  # versão antiga — foi o que aconteceu quando o preço entrou no ar. Imagens e
+  # vídeo continuam com cache longo: são pesados e quase nunca mudam.
+  ExpiresByType text/css "access plus 0 seconds"
+  ExpiresByType application/javascript "access plus 0 seconds"
   ExpiresByType image/png "access plus 30 days"
   ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
   ExpiresByType video/mp4 "access plus 30 days"
+</IfModule>
+
+<IfModule mod_headers.c>
+  # "no-cache" não quer dizer "não guarde": quer dizer "pergunte ao servidor
+  # antes de usar". O navegador manda um pedido condicional e, se nada mudou,
+  # recebe um 304 de poucos bytes. O site continua rápido e um deploy aparece
+  # na hora para quem já tinha visitado.
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
 </IfModule>
 
 Options -Indexes
