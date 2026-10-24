@@ -202,6 +202,15 @@
     }).catch(function (err) { toast(err.message, 'erro'); });
   }
 
+  // "R$ 12,90 / 100g" — deixa claro na lista o que o número significa.
+  function precoComUnidade(p) {
+    var txt = precoBR(p.preco);
+    if (p.preco == null || txt === '—') return txt;
+    var u = p.unidade || '100g';
+    return txt + ' <small style="color:var(--texto-cl)">'
+      + (u === 'un' ? 'cada' : (u === 'kg' ? '/ kg' : '/ 100g')) + '</small>';
+  }
+
   function renderProdutos(itens) {
     document.getElementById('prodCarregando').style.display = 'none';
     document.getElementById('prodVazio').style.display = itens.length ? 'none' : 'block';
@@ -214,7 +223,7 @@
         + '<td>' + esc(p.nome) + '</td>'
         + '<td>' + esc(p.categoria || '—') + '</td>'
         + '<td>' + statusBadge(p) + '</td>'
-        + '<td>' + precoBR(p.preco) + '</td>'
+        + '<td>' + precoComUnidade(p) + '</td>'
         + '<td><div class="acoes">'
         + '<button class="btn btn-ghost btn-sm" data-editar="' + p.id + '">Editar</button>'
         + '<button class="btn btn-danger btn-sm" data-excluir="' + p.id + '">Excluir</button>'
@@ -228,7 +237,7 @@
         + '<div class="meta">'
         + statusBadge(p)
         + '<span>' + esc(p.categoria || 'sem categoria') + '</span>'
-        + '<span>' + precoBR(p.preco) + '</span>'
+        + '<span>' + precoComUnidade(p) + '</span>'
         + '</div></div>'
         + '<div class="acoes">'
         + '<button class="btn btn-ghost btn-sm" data-editar="' + p.id + '">Editar</button>'
@@ -291,6 +300,7 @@
     document.getElementById('pImagemUrl').value = p && p.imagem_url ? p.imagem_url : '';
     document.getElementById('pImagem').value = '';
     document.getElementById('pPreco').value = p && p.preco != null ? String(p.preco).replace('.', ',') : '';
+    document.getElementById('pUnidade').value = (p && p.unidade) ? p.unidade : '100g';
     document.getElementById('pOrdem').value = p ? p.ordem : 0;
     document.getElementById('pGramaMin').value = p && p.grama_min != null ? p.grama_min : '';
     document.getElementById('pGramaStep').value = p && p.grama_step != null ? p.grama_step : '';
@@ -319,6 +329,7 @@
       descricao: document.getElementById('pDescricao').value.trim(),
       imagem_url: document.getElementById('pImagemUrl').value || null,
       preco: document.getElementById('pPreco').value.trim(),
+      unidade: document.getElementById('pUnidade').value,
       ordem: document.getElementById('pOrdem').value || 0,
       grama_min: document.getElementById('pGramaMin').value,
       grama_step: document.getElementById('pGramaStep').value,
