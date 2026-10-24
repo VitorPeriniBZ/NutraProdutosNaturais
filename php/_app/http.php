@@ -88,6 +88,15 @@ function eh_verdadeiro($v)
     return (bool) preg_match('/^(1|true|yes|on)$/i', trim((string) $v));
 }
 
+// Unidade de venda do produto. '100g' e 'kg' são granel (o carrinho soma por
+// peso); 'un' é peça (o carrinho conta unidades). Qualquer valor desconhecido
+// cai no padrão, então um registro antigo nunca quebra a conta.
+function unidade_normalizada($v, $default = '100g')
+{
+    $s = strtolower(trim((string) $v));
+    return in_array($s, ['100g', 'kg', 'un'], true) ? $s : $default;
+}
+
 function texto_ou_null($v, $max = null)
 {
     if ($v === null || is_array($v)) {
@@ -120,6 +129,9 @@ function norm_produto($r)
     }
     if (array_key_exists('preco', $r)) {
         $r['preco'] = $r['preco'] === null ? null : (float) $r['preco'];
+    }
+    if (array_key_exists('unidade', $r)) {
+        $r['unidade'] = unidade_normalizada($r['unidade']);
     }
     return $r;
 }

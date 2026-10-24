@@ -9,7 +9,8 @@ function rota_health()
 
 // GET /api/produtos?categoria=&busca=&destaque=&badge=&pagina=&por_pagina=
 // -> { total, pagina, por_pagina, itens: [...] }
-// Só produtos ativos. O preço NÃO é exposto publicamente.
+// Só produtos ativos. O preço É exposto, junto com a unidade de venda
+// ('100g' | 'kg' | 'un'), que é o que diz ao front-end como somar o carrinho.
 function rota_produtos()
 {
     $categoria = trim((string) query_get('categoria', ''));
@@ -55,7 +56,7 @@ function rota_produtos()
     $offset = ($pagina - 1) * $porPagina;
     $itens = db_query(
         "SELECT p.id, p.nome, p.emoji, p.imagem_url, p.descricao, p.disponivel, p.destaque,
-                p.categoria_id, c.nome AS categoria
+                p.preco, p.unidade, p.categoria_id, c.nome AS categoria
            FROM produtos p
            LEFT JOIN categorias c ON c.id = p.categoria_id
            $whereSql

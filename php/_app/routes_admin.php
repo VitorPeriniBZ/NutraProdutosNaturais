@@ -13,6 +13,7 @@ function dados_produto()
         'imagem_url'   => texto_ou_null(body_get('imagem_url')),
         'descricao'    => texto_ou_null(body_get('descricao'), 500),
         'preco'        => to_num_ou_null(body_get('preco')),
+        'unidade'      => unidade_normalizada(body_get('unidade')),
         'ativo'        => to_bool01(body_get('ativo'), 1),
         'disponivel'   => to_bool01(body_get('disponivel'), 1),
         'destaque'     => to_bool01(body_get('destaque'), 0),
@@ -81,11 +82,11 @@ function admin_produtos_criar()
         json_erro(400, 'O nome do produto é obrigatório');
     }
     $r = db_run(
-        'INSERT INTO produtos (nome, categoria_id, emoji, imagem_url, descricao, preco, ativo, disponivel, destaque, ordem, grama_min, grama_step, grama_max)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO produtos (nome, categoria_id, emoji, imagem_url, descricao, preco, unidade, ativo, disponivel, destaque, ordem, grama_min, grama_step, grama_max)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
             $d['nome'], $d['categoria_id'], $d['emoji'], $d['imagem_url'], $d['descricao'], $d['preco'],
-            $d['ativo'], $d['disponivel'], $d['destaque'], $d['ordem'],
+            $d['unidade'], $d['ativo'], $d['disponivel'], $d['destaque'], $d['ordem'],
             $d['grama_min'], $d['grama_step'], $d['grama_max'],
         ]
     );
@@ -107,12 +108,12 @@ function admin_produtos_atualizar($id)
         json_erro(400, 'O nome do produto é obrigatório');
     }
     db_run(
-        'UPDATE produtos SET nome=?, categoria_id=?, emoji=?, imagem_url=?, descricao=?, preco=?, ativo=?, disponivel=?,
+        'UPDATE produtos SET nome=?, categoria_id=?, emoji=?, imagem_url=?, descricao=?, preco=?, unidade=?, ativo=?, disponivel=?,
                 destaque=?, ordem=?, grama_min=?, grama_step=?, grama_max=?, atualizado_em=CURRENT_TIMESTAMP
           WHERE id=?',
         [
             $d['nome'], $d['categoria_id'], $d['emoji'], $d['imagem_url'], $d['descricao'], $d['preco'],
-            $d['ativo'], $d['disponivel'], $d['destaque'], $d['ordem'],
+            $d['unidade'], $d['ativo'], $d['disponivel'], $d['destaque'], $d['ordem'],
             $d['grama_min'], $d['grama_step'], $d['grama_max'], $id,
         ]
     );
