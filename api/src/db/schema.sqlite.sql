@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS produtos (
   imagem_url    TEXT,
   descricao     TEXT,                 -- texto curto exibido na seção de destaques
   preco         REAL,                 -- opcional; NÃO exibido publicamente (reservado p/ futuro)
+  unidade       TEXT NOT NULL DEFAULT '100g',
   ativo         INTEGER NOT NULL DEFAULT 1,   -- visível no site
   disponivel    INTEGER NOT NULL DEFAULT 1,   -- pode adicionar ao carrinho (0 = "Indisponível")
   destaque      INTEGER NOT NULL DEFAULT 0,   -- aparece na seção "Produtos em destaque" da home

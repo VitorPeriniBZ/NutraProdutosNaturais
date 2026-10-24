@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS produtos (
   emoji         VARCHAR(16),
   imagem_url    VARCHAR(512),
   descricao     VARCHAR(500),         -- texto curto exibido na seção de destaques
-  preco         DECIMAL(10,2),        -- opcional; NÃO exibido publicamente (reservado p/ futuro)
+  preco         DECIMAL(10,2),        -- exibido no site; a unidade abaixo diz o que ele significa
+  unidade       VARCHAR(8) NOT NULL DEFAULT '100g',  -- '100g' (granel) | 'kg' (granel) | 'un' (peça)
   ativo         TINYINT(1) NOT NULL DEFAULT 1,   -- visível no site
   disponivel    TINYINT(1) NOT NULL DEFAULT 1,   -- pode adicionar ao carrinho (0 = "Indisponível")
   destaque      TINYINT(1) NOT NULL DEFAULT 0,   -- aparece na seção "Produtos em destaque" da home
